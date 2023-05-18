@@ -28,8 +28,7 @@ stocktrading-app
 │           └── com
 │               └── stocktrading
 │                   └── stocktradingapp
-│                       ├── sample
-│                       └── StockTradingApplication.java
+│                       └── StockTradingApplicationTests.java
 ├── pom.xml
 └── .gitignore
 ```
@@ -64,9 +63,7 @@ stocktrading-app
 
     - `com.stocktrading.stocktradingapp`: Package directory that mirrors the main source code structure.
 
-      - `sample`: A sample package directory (can be removed).
-
-      - `StockTradingApplication.java`: Test class(es) for testing the application's functionality.
+      - `StockTradingApplicationTests.java`: Test class(es) for testing the application's functionality.
 
 - `pom.xml`: Maven Project Object Model file that defines project dependencies, build configuration, and plugins.
 
