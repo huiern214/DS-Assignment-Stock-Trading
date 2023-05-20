@@ -20,9 +20,8 @@ stocktrading-app
 │   │   └── resources
 │   │       ├── static
 │   │       ├── templates
-│   │       ├── application.properties
-│   │       └── database
-│   │           └── scripts
+│   │       └── application.properties
+│   │           
 │   └── test
 │       └── java
 │           └── com
@@ -52,10 +51,6 @@ stocktrading-app
       - `templates`: Directory for storing templates used by the application.
 
       - `application.properties`: Configuration file for the application.
-
-      - `database`: Directory for storing database-related resources.
-
-        - `scripts`: Subdirectory for storing database scripts.
 
 - `test`: Contains the test code for the project.
 
