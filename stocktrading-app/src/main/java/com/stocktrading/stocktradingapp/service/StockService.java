@@ -15,7 +15,8 @@ import com.stocktrading.stocktradingapp.model.Stock;
 public class StockService {
 
     private static final String API_BASE_URL = "https://yahoo-finance15.p.rapidapi.com/api/yahoo/qu/quote/";
-    private static final String API_KEY = "741fdcaf75msh52a77b3bf384167p1e4b9ajsn8f7c595eb4d1";
+    private static final String API_KEY = "[YOUR_API_KEY]";
+    // Get your own API key here - https://rapidapi.com/sparior/api/yahoo-finance15
 
     public Stock getStockData(String symbol) {
         String url = API_BASE_URL + symbol;
