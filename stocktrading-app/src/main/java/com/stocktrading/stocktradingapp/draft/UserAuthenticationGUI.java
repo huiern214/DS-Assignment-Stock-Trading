@@ -1,3 +1,5 @@
+package com.stocktrading.stocktradingapp.draft;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
