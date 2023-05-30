@@ -1,12 +1,27 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
+ */
+package login;
+
+/**
+ *
+ * @author Muhammad Abdullah Talukder S2191211
+ */
 package com.stocktrading.stocktradingapp.draft;
+
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class UserAuthenticationGUI extends JFrame implements ActionListener {
     private JTextField usernameField;
@@ -16,6 +31,7 @@ public class UserAuthenticationGUI extends JFrame implements ActionListener {
     private JButton createAccountButton;
 
     private Map<String, String> userAccounts;
+    private File userAccountsFile;
 
     public UserAuthenticationGUI() {
         // Set up the JFrame
@@ -26,6 +42,10 @@ public class UserAuthenticationGUI extends JFrame implements ActionListener {
 
         // Initialize user accounts map
         userAccounts = new HashMap<>();
+        userAccountsFile = new File("userAccounts.txt");
+
+        // Load user accounts from the file
+        loadUserAccounts();
 
         // Create the components
         JLabel usernameLabel = new JLabel("Username:");
@@ -81,21 +101,22 @@ public class UserAuthenticationGUI extends JFrame implements ActionListener {
                 JOptionPane.showMessageDialog(this, "Authentication failed. Please try again.");
             }
         } else if (e.getSource() == createAccountButton) {
-            String username = usernameField.getText();
-            String password = new String(passwordField.getPassword());
+            String emailAddress = JOptionPane.showInputDialog(this, "Enter your email address:");
+            if (isValidEmailAddress(emailAddress)) {
+                String username = JOptionPane.showInputDialog(this, "Enter a username:");
+                String password = JOptionPane.showInputDialog(this, "Enter a password:");
 
-            // Check if username is already taken
-            if (userAccounts.containsKey(username)) {
-                JOptionPane.showMessageDialog(this, "Username already exists. Please choose a different username.");
-            } else {
-                String emailAddress = JOptionPane.showInputDialog(this, "Enter your email address:");
-                if (isValidEmailAddress(emailAddress)) {
+                // Check if username is already taken
+                if (userAccounts.containsKey(username)) {
+                    JOptionPane.showMessageDialog(this, "Username already exists. Please choose a different username.");
+                } else {
                     // Create the account
                     userAccounts.put(username, password);
-                    JOptionPane.showMessageDialog(this, "Account created successfully!");
-                } else {
-                    JOptionPane.showMessageDialog(this, "Invalid email address. Please try again.");
+storeUserAccount(username, password);
+JOptionPane.showMessageDialog(this, "Account created successfully!");
                 }
+            } else {
+                JOptionPane.showMessageDialog(this, "Invalid email address. Please try again.");
             }
         } else if (e.getSource() == showPasswordCheckBox) {
             // Toggle password visibility
@@ -138,6 +159,44 @@ public class UserAuthenticationGUI extends JFrame implements ActionListener {
         welcomeFrame.setVisible(true);
     }
 
+    private void saveUserAccounts() {
+        try (PrintWriter writer = new PrintWriter(userAccountsFile)) {
+            for (Map.Entry<String, String> entry : userAccounts.entrySet()) {
+                writer.println(entry.getKey() + "," + entry.getValue());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadUserAccounts() {
+        if (userAccountsFile.exists()) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(userAccountsFile))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    String[] parts = line.split(",");
+                    if (parts.length == 2) {
+                        userAccounts.put(parts[0], parts[1]);
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    
+    private void storeUserAccount(String username, String password) {
+    try {
+        BufferedWriter writer = new BufferedWriter(new FileWriter("userAccounts.txt", true));
+        writer.write(username + "," + password);
+        writer.newLine();
+        writer.close();
+    } catch (IOException e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Error occurred while creating the user account.");
+    }
+}
+
     public static void main(String[] args) {
         // Create and show the GUI
         SwingUtilities.invokeLater(() -> {
@@ -146,3 +205,4 @@ public class UserAuthenticationGUI extends JFrame implements ActionListener {
         });
     }
 }
+

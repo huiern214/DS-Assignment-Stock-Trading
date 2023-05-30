@@ -1,162 +1,155 @@
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Project/Maven2/JavaApp/src/main/java/${packagePath}/${mainClassName}.java to edit this template
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.stocktrading.stocktradingapp.draft;
-import java.util.Scanner;
+package login;
 
 /**
  *
- * @author abdullahiibrahim
+ * @author Muhammad Abdullah Talukder S2191211
  */
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.*;
 
 public class AdminPanel extends JFrame {
-
-    private JTextField usernameField;
-    private JPasswordField passwordField;
+    private JTextArea userListTextArea;
+    private JButton removeButton;
+    private JButton eraseButton;
 
     public AdminPanel() {
         setTitle("Admin Panel");
+        setSize(400, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(300, 200);
         setLocationRelativeTo(null);
-        setLayout(new GridLayout(3, 2));
+        setLayout(new BorderLayout());
 
-        JLabel usernameLabel = new JLabel("Username:");
-        usernameField = new JTextField();
-        JLabel passwordLabel = new JLabel("Password:");
-        passwordField = new JPasswordField();
-        JButton loginButton = new JButton("Login");
+        userListTextArea = new JTextArea();
+        userListTextArea.setEditable(false);
+        JScrollPane scrollPane = new JScrollPane(userListTextArea);
+        add(scrollPane, BorderLayout.CENTER);
 
-        loginButton.addActionListener(new ActionListener() {
+        JPanel buttonPanel = new JPanel(new FlowLayout());
+
+        removeButton = new JButton("Remove User");
+        removeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String username = usernameField.getText();
-                String password = new String(passwordField.getPassword());
-
-                if (isValidAdmin(username, password)) {
-                    JOptionPane.showMessageDialog(null, "Login successful!");
-                    openAdminOperationsWindow();
-                } else {
-                    JOptionPane.showMessageDialog(null, "Invalid username or password. Access denied.");
+                String username = JOptionPane.showInputDialog(AdminPanel.this, "Enter the username to remove:");
+                if (username != null && !username.isEmpty()) {
+                    removeUser(username);
                 }
             }
         });
+        buttonPanel.add(removeButton);
 
-        add(usernameLabel);
-        add(usernameField);
-        add(passwordLabel);
-        add(passwordField);
-        add(new JLabel()); // Empty label for spacing
-        add(loginButton);
+        eraseButton = new JButton("Erase User Accounts");
+        eraseButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int choice = JOptionPane.showConfirmDialog(AdminPanel.this,
+                        "Are you sure you want to erase all user accounts?", "Confirmation",
+                        JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+                if (choice == JOptionPane.YES_OPTION) {
+                    eraseUserAccounts();
+                }
+            }
+        });
+        buttonPanel.add(eraseButton);
+
+        add(buttonPanel, BorderLayout.SOUTH);
 
         setVisible(true);
+
+        // Display user accounts
+        showUserAccounts();
     }
 
-    private boolean isValidAdmin(String username, String password) {
-        // Implement admin credentials validation logic
-        String validUsername = "Abdullahi";
-        String validPassword = "admin123@13";
-        return username.equals(validUsername) && password.equals(validPassword);
+    private void showUserAccounts() {
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader("userAccounts.txt"));
+            String line;
+            StringBuilder userList = new StringBuilder();
+            int count = 1;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts.length == 2) {
+                    String username = parts[0];
+                    userList.append(count).append(". Username: ").append(username).append("\n");
+                    count++;
+                }
+            }
+            reader.close();
+            userListTextArea.setText(userList.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error occurred while reading user accounts.");
+        }
     }
 
-    private void openAdminOperationsWindow() {
-        JFrame adminOperationsFrame = new JFrame("Admin Panel Operations");
-        adminOperationsFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        adminOperationsFrame.setSize(400, 300);
-        adminOperationsFrame.setLocationRelativeTo(null);
-        adminOperationsFrame.setLayout(new GridLayout(7, 1));
+    private void removeUser(String username) {
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader("userAccounts.txt"));
+            StringBuilder updatedContent = new StringBuilder();
+            String line;
+            boolean removed = false;
 
-        JButton addParticipantButton = new JButton("Add Participant");
-        JButton updateParticipantPointsButton = new JButton("Update Participant Points");
-        JButton displayParticipantStatisticsButton = new JButton("Display Participant Statistics");
-        JButton displayDisqualifiedParticipantsButton = new JButton("Display Disqualified Participants");
-        JButton disqualifyParticipantButton = new JButton("Disqualify Participant");
-        JButton monitorTransactionsButton = new JButton("Monitor Transactions");
-        JButton exitButton = new JButton("Exit");
-
-        addParticipantButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Handle add participant button click
-                JOptionPane.showMessageDialog(null, "Add Participant button clicked.");
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts.length == 2) {
+                    String existingUsername = parts[0];
+                    if (!existingUsername.equals(username)) {
+                        updatedContent.append(line).append("\n");
+                    } else {
+                        removed = true;
+                    }
+                }
             }
-        });
+            reader.close();
 
-        updateParticipantPointsButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Handle update participant points button click
-                JOptionPane.showMessageDialog(null, "Update Participant Points button clicked.");
+            if (removed) {
+                BufferedWriter writer = new BufferedWriter(new FileWriter("userAccounts.txt"));
+                writer.write(updatedContent.toString());
+                writer.close();
+                JOptionPane.showMessageDialog(this, "User account has been removed successfully!");
+                // Refresh user accounts display
+                showUserAccounts();
+            } else {
+                JOptionPane.showMessageDialog(this, "User account not found!");
             }
-        });
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error occurred while removing user account.");
+        }
+    }
 
-        displayParticipantStatisticsButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Handle display participant statistics button click
-                JOptionPane.showMessageDialog(null, "Display Participant Statistics button clicked.");
-            }
-        });
-
-        displayDisqualifiedParticipantsButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Handle display disqualified participants button click
-                JOptionPane.showMessageDialog(null, "Display Disqualified Participants button clicked.");
-            }
-        });
-
-        disqualifyParticipantButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Handle disqualify participant button click
-                JOptionPane.showMessageDialog(null, "Disqualify Participant button clicked.");
-            }
-        });
-
-        monitorTransactionsButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Handle monitor transactions button click
-                JOptionPane.showMessageDialog(null, "Monitor Transactions button clicked.");
-            }
-        });
-
-        exitButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Handle exit button click
-                JOptionPane.showMessageDialog(null, "Exiting Admin Panel...");
-                System.exit(0);
-            }
-        });
-
-        adminOperationsFrame.add(addParticipantButton);
-        adminOperationsFrame.add(updateParticipantPointsButton);
-        adminOperationsFrame.add(displayParticipantStatisticsButton);
-        adminOperationsFrame.add(displayDisqualifiedParticipantsButton);
-        adminOperationsFrame.add(disqualifyParticipantButton);
-        adminOperationsFrame.add(monitorTransactionsButton);
-        adminOperationsFrame.add(exitButton);
-
-        adminOperationsFrame.setVisible(true);
+    private void eraseUserAccounts() {
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter("userAccounts.txt"));
+            writer.write("");
+            writer.close();
+            JOptionPane.showMessageDialog(this, "All user accounts have been erased successfully!");
+            // Refresh user accounts display
+            showUserAccounts();
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error occurred while erasing user accounts.");
+        }
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new AdminPanel();
-            }
-        });
+        SwingUtilities.invokeLater(AdminPanel::new);
     }
 }
+
+
+
+
+
+
+
 
 
 
