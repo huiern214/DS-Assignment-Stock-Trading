@@ -2,14 +2,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
  */
-package login;
+package com.stocktrading.stocktradingapp.draft;
 
 /**
  *
  * @author Muhammad Abdullah Talukder S2191211
  */
-package com.stocktrading.stocktradingapp.draft;
-
 
 import javax.swing.*;
 import java.awt.*;
@@ -112,8 +110,8 @@ public class UserAuthenticationGUI extends JFrame implements ActionListener {
                 } else {
                     // Create the account
                     userAccounts.put(username, password);
-storeUserAccount(username, password);
-JOptionPane.showMessageDialog(this, "Account created successfully!");
+                    storeUserAccount(username, password);
+                    JOptionPane.showMessageDialog(this, "Account created successfully!");
                 }
             } else {
                 JOptionPane.showMessageDialog(this, "Invalid email address. Please try again.");
