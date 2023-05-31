@@ -1,53 +1,78 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch } from '@fortawesome/free-solid-svg-icons';
-import '@fortawesome/fontawesome-free/css/all.css';
+
 import './StockList.css';
 
 const StockList = () => {
   const [stocks, setStocks] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [lastUpdateTime, setLastUpdateTime] = useState('');
 
+  const fetchStockData = async () => {
+    try {
+      const response = await axios.get('http://localhost:8080/stocks');
+      const stockData = Array.from(response.data);
+      setStocks(stockData);
+  
+      const updateTime = response.headers['last-update'];
+      console.log(updateTime);
+      setLastUpdateTime(updateTime);
+      
+    } catch (error) {
+      console.error('Error fetching stock data:', error);
+    }
+  };
+  
+  const refreshStockData = async () => {
+    try {
+      await axios.get('http://localhost:8080/stocks/refresh');
+      fetchStockData();
+    } catch (error) {
+      console.error('Error refreshing stock data:', error);
+    }
+  };
+  
   useEffect(() => {
-    const fetchStockData = async () => {
-      try {
-        const response = await axios.get('http://localhost:8080/stocks');
-        const stockData = Array.from(response.data);
-        setStocks(stockData);
-      } catch (error) {
-        console.error('Error fetching stock data:', error);
-      }
-    };
-
     fetchStockData();
+    const timer = setInterval(refreshStockData, 5 * 60 * 1000);
+  
+    return () => {
+      clearInterval(timer);
+    };
   }, []);
+
+  const handleSearch = async () => {
+    try {
+      const response = await axios.post('http://localhost:8080/stocks/search', {
+        query: searchQuery,
+      });
+      const searchResults = Array.from(response.data);
+      setStocks(searchResults);
+      
+    } catch (error) {
+      console.error('Error searching stocks:', error);
+    }
+  };
 
   const getChangeClass = (value) => {
     return value < 0 ? 'negative-change' : 'positive-change';
   };
 
-  const filteredStocks = stocks.filter(
-    (stock) =>
-      stock.symbol.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      stock.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
   return (
-    <div>
+    <div key={lastUpdateTime}>
       <div className="search-container">
-        <div className="search-input-wrapper">
-          <input
-            type="text"
-            placeholder="Search by symbol or name"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="search-input"
-          />
-          {/* <FontAwesomeIcon icon={faSearch} className="search-icon" /> */}
-        </div>
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="search-input"
+          placeholder="Search by symbol or name"
+        />
+        <button className="search-button" type="submit" onClick={handleSearch}>
+          Search
+        </button>
       </div>
-
+      <div className="update-time">Last Update: {lastUpdateTime}</div>
       <table className="stock-table">
         <thead>
           <tr>
@@ -59,16 +84,16 @@ const StockList = () => {
           </tr>
         </thead>
         <tbody>
-          {filteredStocks.map((stock) => (
+          {stocks?.map((stock) => (
             <tr key={stock.symbol}>
               <td>{stock.symbol}</td>
               <td>{stock.name}</td>
-              <td>{stock.price}</td>
+              <td>{Number(stock.price).toFixed(2)}</td>
               <td className={getChangeClass(stock.priceChange)}>
-                {stock.priceChange}
+                {Number(stock.priceChange).toFixed(4)}
               </td>
               <td className={getChangeClass(stock.priceChangePercent)}>
-                {stock.priceChangePercent}
+                {Number(stock.priceChangePercent).toFixed(4)}
               </td>
             </tr>
           ))}

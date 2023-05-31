@@ -1,6 +1,6 @@
 package com.stocktrading.stocktradingapp.model;
 
-public class Stock implements Comparable<Stock>{
+public class Stock {
     private String symbol;
     private String name; // company name
     private double price; // market price
@@ -45,11 +45,6 @@ public class Stock implements Comparable<Stock>{
 
     public void setPriceChangePercent(double priceChangePercent) {
         this.priceChangePercent = priceChangePercent;
-    }
-
-    @Override
-    public int compareTo(Stock otherStock) {
-        return this.symbol.compareTo(otherStock.getSymbol());
     }
 }
 
