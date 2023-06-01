@@ -48,7 +48,7 @@ const StockList = () => {
       });
       const searchResults = Array.from(response.data);
       setStocks(searchResults);
-      
+
     } catch (error) {
       console.error('Error searching stocks:', error);
     }
@@ -83,7 +83,7 @@ const StockList = () => {
             <th>Change %</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="table-body">
           {stocks?.map((stock) => (
             <tr key={stock.symbol}>
               <td>{stock.symbol}</td>
