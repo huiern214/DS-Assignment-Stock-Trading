@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import StockList from './components/stocklist/StockList';
 import Layout from './components/Layout';
 import Navbar from './components/sidebar/Navbar';
+import Stock from './components/stock/Stock';
 
 function App() {
   return (
@@ -13,8 +14,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Layout/>}>
             <Route path="/" element={<StockList />} ></Route>
-            {/* <Route path="/Trailer/:ytTrailerId" element={<Trailer/>}></Route>
-            <Route path="/Reviews/:movieId" element ={<Reviews getMovieData={getMovieData} movie={movie} reviews={reviews} setReviews={setReviews} />}></Route>
+            <Route path="/stocks/:stockId" element={<Stock />}></Route>
+            {/* <Route path="/Reviews/:movieId" element ={<Reviews getMovieData={getMovieData} movie={movie} reviews={reviews} setReviews={setReviews} />}></Route>
             <Route path="*" element = {<NotFound/>}></Route> */}
           </Route>
       </Routes>

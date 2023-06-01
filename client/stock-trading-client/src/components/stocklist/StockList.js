@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 import './StockList.css';
@@ -86,7 +87,11 @@ const StockList = () => {
         <tbody className="table-body">
           {stocks?.map((stock) => (
             <tr key={stock.symbol}>
-              <td>{stock.symbol}</td>
+              <td>
+                <Link to={`/stocks/${stock.symbol}`} className="stock-link">
+                  {stock.symbol}
+                </Link>
+              </td>
               <td>{stock.name}</td>
               <td>{Number(stock.price).toFixed(2)}</td>
               <td className={getChangeClass(stock.priceChange)}>
