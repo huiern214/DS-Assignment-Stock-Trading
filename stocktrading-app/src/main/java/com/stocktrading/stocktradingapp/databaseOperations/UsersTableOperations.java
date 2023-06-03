@@ -141,6 +141,20 @@ public class UsersTableOperations {
         return null; // User not found
     }
 
+    public double getUserFunds(int userId) throws SQLException {
+        String getUserFundsQuery = "SELECT funds FROM Users WHERE user_id = ?";
+        try (PreparedStatement statement = connection.prepareStatement(getUserFundsQuery)) {
+            statement.setInt(1, userId);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getDouble("funds");
+                }
+            }
+        }
+        throw new SQLException("Failed to retrieve user funds");
+    }
+
     // Additional methods for retrieving user information or performing other
     // operations on the Users table
 }
