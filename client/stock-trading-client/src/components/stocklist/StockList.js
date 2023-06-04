@@ -35,7 +35,8 @@ const StockList = () => {
   
   useEffect(() => {
     fetchStockData();
-    const timer = setInterval(refreshStockData, 5 * 60 * 1000);
+    // const timer = setInterval(refreshStockData, 5 * 60 * 1000);
+    const timer = setInterval(refreshStockData, 120 * 60 * 1000);
   
     return () => {
       clearInterval(timer);
@@ -61,49 +62,51 @@ const StockList = () => {
 
   return (
     <div key={lastUpdateTime}>
-      <div className="search-container">
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="search-input"
-          placeholder="Search by symbol or name"
-        />
-        <button className="search-button" type="submit" onClick={handleSearch}>
-          Search
-        </button>
-      </div>
-      <div className="update-time">Last Update: {lastUpdateTime}</div>
-      <table className="stock-table">
-        <thead>
-          <tr>
-            <th>Symbol</th>
-            <th>Name</th>
-            <th>Price</th>
-            <th>Price Change</th>
-            <th>Change %</th>
-          </tr>
-        </thead>
-        <tbody className="table-body">
-          {stocks?.map((stock) => (
-            <tr key={stock.symbol}>
-              <td>
-                <Link to={`/stocks/${stock.symbol}`} className="stock-link">
-                  {stock.symbol}
-                </Link>
-              </td>
-              <td>{stock.name}</td>
-              <td>{Number(stock.price).toFixed(2)}</td>
-              <td className={getChangeClass(stock.priceChange)}>
-                {Number(stock.priceChange).toFixed(4)}
-              </td>
-              <td className={getChangeClass(stock.priceChangePercent)}>
-                {Number(stock.priceChangePercent).toFixed(4)}
-              </td>
+      <div className="stock-list">
+        <div className="search-container">
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="search-input"
+            placeholder="Search by symbol or name"
+          />
+          <button className="search-button" type="submit" onClick={handleSearch}>
+            Search
+          </button>
+        </div>
+        <div className="update-time">Last Update: {new Date(lastUpdateTime).toLocaleString()}</div>
+        <table className="stock-table">
+          <thead>
+            <tr>
+              <th>Symbol</th>
+              <th>Name</th>
+              <th>Price</th>
+              <th>Price Change</th>
+              <th>Change %</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody className="table-body">
+            {stocks?.map((stock) => (
+              <tr key={stock.symbol}>
+                <td>
+                  <Link to={`/stocks/${stock.symbol}`} className="stock-link">
+                    {stock.symbol}
+                  </Link>
+                </td>
+                <td className="stock-name">{stock.name}</td>
+                <td>{Number(stock.price).toFixed(2)}</td>
+                <td className={getChangeClass(stock.priceChange)}>
+                  {Number(stock.priceChange).toFixed(4)}
+                </td>
+                <td className={getChangeClass(stock.priceChangePercent)}>
+                  {Number(stock.priceChangePercent).toFixed(4)}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
