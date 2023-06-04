@@ -35,8 +35,7 @@ const StockList = () => {
   
   useEffect(() => {
     fetchStockData();
-    // const timer = setInterval(refreshStockData, 5 * 60 * 1000);
-    const timer = setInterval(refreshStockData, 120 * 60 * 1000);
+    const timer = setInterval(refreshStockData, 5 * 60 * 1000);
   
     return () => {
       clearInterval(timer);
