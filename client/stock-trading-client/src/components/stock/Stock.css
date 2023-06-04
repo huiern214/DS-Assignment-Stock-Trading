@@ -1,0 +1,310 @@
+/* Stock header */
+.stock-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    /* height: 200px; */
+    background-color: #f2f2f2;
+    margin-top: 7%;
+  }
+  .stock-info {
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+  }
+  .name {
+    margin-bottom: 0px;
+  }
+  .symbol {
+    font-size: 14px;
+    color: gray;
+  }
+  .price-change {
+    display: flex;
+    align-items: baseline;
+    margin: 0px;
+  }
+  .price {
+    font-size: 50px;
+    font-weight: bold;
+    margin: 0px;
+    padding-right: 5px;
+  }
+  /* .change,
+  .change-percent {
+    font-size: 20px;
+    color: gray;
+    padding-right: 5px;
+    margin-bottom: 0px;
+  } */
+  .negative-change {
+    padding-right: 5px;
+    color: red;
+  }
+  
+  .positive-change {
+    padding-right: 5px;
+    color: green;
+  }
+  .updated-time {
+    font-size: 14px;
+    color: gray;
+    margin-bottom: 0px;
+    padding-left: 0px;
+  }  
+  .stock-actions {
+    display: flex;
+    gap: 10px;
+    padding-top: 10%;
+  }
+
+/* Customize button */
+.buy-button {
+    background-color: rgb(254, 74, 74);
+    color: white;
+    height: 29px;
+    align-items: center; /* Center vertically */
+    border-radius: 4px; /* Set the border radius for rounded corners */
+    padding: 15px 30px; /* Set the padding for the button */
+    font-size: 14px; /* Set the font size */
+    text-align: center;
+    border: none; /* Remove the default button border */
+    margin-left: 5px;
+    margin-right: 5px;
+    cursor: pointer; /* Set the cursor to indicate it's clickable */
+    line-height: 3px;
+}
+    .buy-button:hover {
+        background-color: #686868;
+        color: white;
+        border: #000000;
+    }
+    .sell-button {
+        background-color: rgb(50, 130, 50);
+        color: white;
+        font-display: flex;
+        height: 29px;
+        align-items: center; /* Center vertically */
+        border-radius: 4px; /* Set the border radius for rounded corners */
+        padding: 15px 30px; /* Set the padding for the button */
+        font-size: 14px; /* Set the font size */
+        text-align: center;
+        border: none; /* Remove the default button border */
+        margin-left: 5px;
+        margin-right: 5px;
+        cursor: pointer; /* Set the cursor to indicate it's clickable */
+        line-height: 3px;
+    }
+    .sell-button:hover {
+        background-color: #686868;
+        color: white;
+        border: #000000;
+    }
+
+/* Pop-up window for Buy & Sell Stock */
+.stock-info-container{
+    margin: 50px;
+} 
+  .modal {
+    font-family: Arial, sans-serif;
+    background-color: rgba(0, 0, 0, 0.5);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 4px;
+    width: 300px;
+    height: 300px;
+  }
+  .modal h2 {
+    margin-top: 0;
+  } 
+  .modal label {
+    display: block;
+    margin-top: 10px;
+  }
+  .modal input {
+    width: 100%;
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+  }
+  .modal input:focus {
+    outline: none;
+    border-color: #3d80c7;
+  }
+  .modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+  }
+  .modal-buttons button {
+    margin-left: 10px;
+    padding: 8px 12px;
+    background-color: #3a8ae6;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .modal-buttons button:hover {
+    background-color: #1a83ff;
+  }
+  
+  .close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 20px;
+    font-weight: bold;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    }
+
+  
+/* Stock info preview */
+.link {
+    text-decoration: none;
+    background-color: #3a8ae6;
+    color: #fff;
+    font-size: 12px;
+    text-align: center;
+    display: block;
+    padding: 5px;
+    border-radius: 4px;
+    width: 15%;
+    max-width: 15%;
+    margin-bottom: 1%;
+    margin-left: 5%;
+  }
+  .link:hover {
+    background-color: #1a83ff;
+}
+.stock-preview-iframe {
+    width: 90%;
+    height: 400px;
+    object-fit: contain;
+    margin: 0px auto;
+}
+
+/* Table */
+.stock-table {
+    width: 90%;
+    border-collapse: collapse;
+    margin: 0px auto;
+    max-width: 90%;
+    margin-bottom: 10%;
+  }
+  .stock-table th,
+  .stock-table td {
+    padding: 8px;
+    border: 1px solid #ddd;
+  }
+  .stock-table th {
+    background-color: #f2f2f2;
+    text-align: center;
+  }
+  .stock-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  .stock-table tr:hover {
+    background-color: #f5f5f5;
+  }
+  .table-body{
+    text-align: center;
+  }
+
+/* Tabs */
+*, ::before, ::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    }
+      
+      body {
+        background: #fff;
+      }
+      
+      .container {
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        width: 100%;
+        height: 100%;
+        background: #f1f1f1;
+        margin: 20px auto 0;
+        word-break: break-all;
+        border: 1px solid rgba(0, 0, 0, 0.078);
+      }
+      .bloc-tabs {
+        display: flex;
+      }
+      .tabs {
+        padding: 15px;
+        text-align: center;
+        width: 50%;
+        background: rgba(128, 128, 128, 0.075);
+        cursor: pointer;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.274);
+        box-sizing: content-box;
+        position: relative;
+        outline: none;
+      }
+      .tabs:not(:last-child){
+        border-right: 1px solid rgba(0, 0, 0, 0.274);
+      }      
+      .active-tabs  {
+        background: white;
+        border-bottom: 1px solid transparent;
+      }
+      .active-tabs::before {
+        content: "";
+        display: block;
+        position: absolute;
+        top: -5px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: calc(100% + 2px);
+        height: 5px;
+        background: rgb(88, 147, 241);
+      }
+      
+      button {
+        border: none;
+      }
+      .content-tabs {
+        flex-grow : 1;
+      }
+      .content {
+        background: white;
+        padding: 20px;
+        width: 100%;
+        height: 500px;
+        display: none;
+      }
+      .content h2 {
+        padding: 0px 0 5px 0px;
+      }
+      .content hr {
+        width: 100px;
+        height: 2px;
+        background: #222;
+        margin-bottom: 5px;
+      }
+      .content p {
+        width: 100%;
+        height: 100%;
+      }
+      .active-content {
+        display: block;
+      }

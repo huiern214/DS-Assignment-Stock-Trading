@@ -1,10 +1,19 @@
 /* StockList.css */
+/* control the whole page size */
+.stock-list {
+  width: 80%;
+  height: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  margin: 0px auto;
+}
 
 .stock-table {
     width: 90%;
     border-collapse: collapse;
     margin: 0px auto;
-    max-width: 80%;
+    max-width: 90%;
+    margin-bottom: 10%;
   }
   
   .stock-table th,
@@ -26,6 +35,10 @@
     background-color: #f5f5f5;
   }
 
+  .stock-table td.stock-name {
+    text-align: left;
+  }
+
   .table-body{
     text-align: center;
   }
@@ -39,16 +52,17 @@
   }
 
 .search-container {
-  padding-left: 60%;
+  padding-left: 62.5%;
   padding-top: 20px;
 }
 
 .search-input {
-    padding: 8px;
+    padding: 14px;
     border: 1px solid #ddd;
     border-radius: 4px;
-    width: 300px;
-    font-size: 16px;
+    width: 200px;
+    height: 12px;
+    font-size: 14px;
   }
   
 .search-input:focus {
@@ -57,9 +71,10 @@ border-color: #3d80c7;
 }
 
 .search-button {
+  height: 29px;
   border-radius: 4px; /* Set the border radius for rounded corners */
   padding: 8px 10px; /* Set the padding for the button */
-  font-size: 16px; /* Set the font size */
+  font-size: 14px; /* Set the font size */
   border: none; /* Remove the default button border */
   cursor: pointer; /* Set the cursor to indicate it's clickable */
 }
@@ -71,11 +86,11 @@ border-color: #3d80c7;
 }
 
 .update-time {
-  font-size: 12px;
-  color: #000000;
-  margin-top: 8px;
-  margin-bottom: 8px;
-  padding-left: 10%;
+  font-size: 14px;
+  color: gray;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  padding-left: 5%;
   text-align: left;
 }
 

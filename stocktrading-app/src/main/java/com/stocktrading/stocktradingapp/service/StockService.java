@@ -7,7 +7,9 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.PriorityQueue;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -50,7 +52,7 @@ public class StockService {
             JsonNode jsonNode = objectMapper.readTree(response.body());
     
             if (jsonNode.isArray()) {
-                PriorityQueue<Stock> stockQueue = new PriorityQueue<>(Comparator.comparing(Stock::getPrice).reversed());
+                List<Stock> stockList = new ArrayList<>();
     
                 for (JsonNode stockNode : jsonNode) {
                     String symbol = stockNode.get("symbol").asText();
@@ -60,7 +62,19 @@ public class StockService {
                     double priceChangePercent = stockNode.get("regularMarketChangePercent").asDouble();
     
                     Stock stock = new Stock(symbol, companyName, price, priceChange, priceChangePercent);
-                    stockQueue.offer(stock);
+                    stockList.add(stock);
+                }
+    
+                // Since PriorityQueue does not allow sorting, we will sort the list first
+                // Sort the list based on the name in ascending order
+                stockList.sort(Comparator.comparing(Stock::getName));
+
+                // Create a PriorityQueue based on the sorted list
+                PriorityQueue<Stock> stockQueue = new PriorityQueue<>(Comparator.comparing(Stock::getName));
+                stockQueue.addAll(stockList);
+    
+                for (Stock stock : stockQueue) {
+                    System.out.print(stock.getPrice() + ", ");
                 }
                 return stockQueue;
             }
@@ -70,5 +84,4 @@ public class StockService {
     
         return null;
     }
-    
-}
+}   
