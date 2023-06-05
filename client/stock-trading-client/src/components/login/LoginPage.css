@@ -1,0 +1,160 @@
+/* LoginPage.css */
+.login-page {
+    background-color: #e7f3ff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: fit-content;
+    height: 90vh;
+  }
+
+  .side-page {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+    width: 50%;
+  }
+
+  .welcome-text {
+    font-size: 2.2rem;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+    /* Add any other styles you want */
+  }
+  
+  .login-image img {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  .login-form {
+    flex: 1;
+    padding: 20px;
+    max-width: 400px;
+    background-color: #fffefe;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  }
+  
+  .login-form h2 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .form-group {
+    margin-bottom: 15px;
+  }
+  
+  .form-group label {
+    display: block;
+    font-weight: bold;
+  }
+  
+  .form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+  }
+
+  .form-group input:focus {
+    outline: none;
+    border-color: #3d80c7;
+  }
+
+  .text {
+    text-align: left;
+    padding: 3px;
+  }
+
+  .password-input {
+    position: relative;
+  }
+  
+  .password-input input {
+    padding-right: 30px;
+  }
+  
+  .password-input .toggle-password {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    color: #555;
+  }
+
+  .error-message {
+    color: rgba(255, 0, 0, 0.897);
+    font-size: 12px;
+    padding: 3px;
+    text-align: left;
+  }
+  
+  .login-button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #4caf50;
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  
+  .signup-link {
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  .signup-link a {
+    color: #007bff;
+  }
+
+  .success-modal {
+    font-family: Arial, sans-serif;
+    background-color: rgba(0, 0, 0, 0.5);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .success-modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 4px;
+    width: 300px;
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative; 
+  }
+  
+  .success-image img {
+    max-width: 50%;
+    height: auto;
+  }
+  
+  .modal-close {
+    position: absolute;
+    top: 0px;
+    right: 5px;
+    cursor: pointer;
+    font-size: 24px; /* Increase the font size */
+    padding: 8px; /* Increase the padding */
+  }
+  
