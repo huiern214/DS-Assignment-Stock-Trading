@@ -7,14 +7,14 @@ import lombok.Setter;
 @Setter
 public class MarketDepth {
     private String symbol;
-    private double Price;
-    private int Qty;
+    private double price;
+    private int qty;
     private int noOfAcc;
 
-    public MarketDepth(String symbol, double Price, int Qty, int noOfAcc) {
+    public MarketDepth(String symbol, double price, int qty, int noOfAcc) {
         this.symbol = symbol;
-        this.Price = Price;
-        this.Qty = Qty;
+        this.price = price;
+        this.qty = qty;
         this.noOfAcc = noOfAcc;
     }
 
