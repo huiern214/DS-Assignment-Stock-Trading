@@ -7,6 +7,13 @@ public class Stock {
     private double priceChange; // for display purposes (in 4 decimal places)
     private double priceChangePercent; // for display purposes (in 4 decimal places)
 
+
+    public Stock(String symbol, String name, double price) {
+        this.symbol = symbol;
+        this.name = name;
+        this.price = price;
+    }
+
     public Stock(String symbol, String name, double price, double priceChange, double priceChangePercent) {
         this.symbol = symbol;
         this.name = name;
@@ -45,6 +52,15 @@ public class Stock {
 
     public void setPriceChangePercent(double priceChangePercent) {
         this.priceChangePercent = priceChangePercent;
+    }
+
+    @Override
+    public String toString() {
+        return "Stock{" +
+                "symbol='" + symbol + '\'' +
+                ", name='" + name + '\'' +
+                ", price=" + price +
+                '}';
     }
 }
 

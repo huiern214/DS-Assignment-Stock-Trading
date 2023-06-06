@@ -1,7 +1,6 @@
 package com.stocktrading.stocktradingapp.controller;
 
 import com.stocktrading.stocktradingapp.model.User;
-import com.stocktrading.stocktradingapp.model.UserProfile;
 import com.stocktrading.stocktradingapp.service.UserService;
 
 import java.sql.SQLException;
@@ -14,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")
+@CrossOrigin(origins = "*")
 public class UserController {
 
     private final UserService userService;
@@ -38,18 +38,22 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestBody Map<String, String> loginInfo) {
-        boolean success = userService.authenticateUser(loginInfo.get("email"), loginInfo.get("password"));
-        if (success) {
-            return ResponseEntity.ok("User logged in successfully");
+    public ResponseEntity<Integer> loginUser(@RequestBody Map<String, String> loginInfo) {
+        String email = loginInfo.get("email");
+        String password = loginInfo.get("password");
+
+        int userId = userService.authenticateUser(email, password);
+        if (userId != -1) {
+            return ResponseEntity.ok(userId);
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(-1);
     }
 
-    @GetMapping("/{email}")
-    public ResponseEntity<UserProfile> getUserProfile(@PathVariable String email) {
+    @GetMapping("/{user_id}")
+    // @RequestMapping()
+    public ResponseEntity<User> getUserProfile(@PathVariable int user_id) {
         try {
-            UserProfile userProfile = userService.getUserProfile(email);
+            User userProfile = userService.getUser(user_id);
             if (userProfile != null) {
                 return ResponseEntity.ok(userProfile);
             }

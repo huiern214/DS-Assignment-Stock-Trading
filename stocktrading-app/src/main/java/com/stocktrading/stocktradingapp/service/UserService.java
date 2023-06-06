@@ -8,7 +8,9 @@ import java.sql.SQLException;
 
 import org.springframework.stereotype.Service;
 
-import com.stocktrading.stocktradingapp.model.UserProfile;
+import com.stocktrading.stocktradingapp.model.Stock;
+import com.stocktrading.stocktradingapp.model.User;
+import com.stocktrading.stocktradingapp.model.Portfolio;
 
 @Service
 public class UserService {
@@ -81,39 +83,64 @@ public class UserService {
         return null; // Return null if user is not found
     }
 
-    public boolean authenticateUser(String email, String password) {
-        // Perform authentication logic, e.g., validate email and password against the database
-        String query = "SELECT COUNT(*) FROM Users WHERE email = ? AND password = ?";
+    public int authenticateUser(String email, String password) {
+        String query = "SELECT user_id FROM Users WHERE email = ? AND password = ?";
         try (Connection connection = DriverManager.getConnection(databaseUrl);
             PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, email);
             statement.setString(2, password);
-            
+    
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    int count = resultSet.getInt(1);
-                    return count > 0;
+                    return resultSet.getInt("user_id");
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    return false;
-    }
+        return -1; // User not found or incorrect password
+    }    
 
-    public UserProfile getUserProfile(String email) throws SQLException {
+    public User getUser(int userId) throws SQLException {
+        String getUserProfileQuery = "SELECT u.user_id, u.username, u.email, u.password, u.funds, p.stock_id, p.quantity, p.purchase_price " +
+                "FROM Users u " +
+                "LEFT JOIN Portfolio p ON u.user_id = p.user_id " +
+                "WHERE u.user_id = ?";
         try (Connection connection = DriverManager.getConnection(databaseUrl);
-             PreparedStatement statement = connection.prepareStatement("SELECT username, email, funds FROM Users WHERE email = ?")) {
-            statement.setString(1, email);
+            PreparedStatement statement = connection.prepareStatement(getUserProfileQuery)) {
+            StockTableOperationService stockTable = new StockTableOperationService();
+
+            statement.setInt(1, userId);
 
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
+                    int fetchedUserId = resultSet.getInt("user_id");
                     String username = resultSet.getString("username");
-                    String userEmail = resultSet.getString("email");
-                    Double funds = resultSet.getDouble("funds");
+                    String email = resultSet.getString("email");
+                    String password = resultSet.getString("password");
+                    double funds = resultSet.getDouble("funds");
 
-                    // Create a UserProfile object and return it
-                    return new UserProfile(username, userEmail, funds);
+                    System.out.println("Stock ID: " + resultSet.getString("stock_id"));
+                    System.out.println("Quantity: " + resultSet.getInt("quantity"));
+                    System.out.println("Purchase Price: " + resultSet.getDouble("purchase_price"));
+
+                    // Create a User object 
+                    User user = new User(username, email, password);
+                    user.setUserId(fetchedUserId);
+                    user.setFunds(funds);
+
+                    do {
+                        String stockId = resultSet.getString("stock_id");
+                        int quantity = resultSet.getInt("quantity");
+                        double purchasePrice = resultSet.getDouble("purchase_price");          
+                        Stock stock = stockTable.getStock(stockId); // Assuming a method to retrieve stock details
+                        // System.out.println("Stock: " + stock.getName() + " " + stock.getSymbol() + " " + stock.getPrice());
+                        Portfolio portfolio = new Portfolio();
+                        portfolio.addStock(stock, quantity);
+                        user.setPortfolio(portfolio);
+                    } while (resultSet.next());
+
+                    return user;
                 }
             }
         }

@@ -17,5 +17,4 @@ public class MarketDepth {
         this.qty = qty;
         this.noOfAcc = noOfAcc;
     }
-
 }
