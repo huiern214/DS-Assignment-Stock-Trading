@@ -1,5 +1,6 @@
 package com.stocktrading.stocktradingapp.databaseOperations;
 
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -18,7 +19,7 @@ public class StockTradingAppDatabase {
         createWatchlistTable();
         createUsersTable();
         createPortfolioTable();
-        // createVirtualFundsTable();
+//        createVirtualFundsTable();
     }
 
     public void createUsersTable() throws SQLException {
@@ -32,14 +33,14 @@ public class StockTradingAppDatabase {
         executeUpdateQuery(createUsersTable);
     }
 
-    // public void createVirtualFundsTable() throws SQLException {
-    // String createVirtualFundsTable = "CREATE TABLE IF NOT EXISTS VirtualFunds ("
-    // + "user_id INTEGER PRIMARY KEY,"
-    // + "available_balance DECIMAL(10, 2) NOT NULL"
-    // + ")";
-    //
-    // executeUpdateQuery(createVirtualFundsTable);
-    // }
+//    public void createVirtualFundsTable() throws SQLException {
+//        String createVirtualFundsTable = "CREATE TABLE IF NOT EXISTS VirtualFunds ("
+//                + "user_id INTEGER PRIMARY KEY,"
+//                + "available_balance DECIMAL(10, 2) NOT NULL"
+//                + ")";
+//
+//        executeUpdateQuery(createVirtualFundsTable);
+//    }
 
     public void createStocksTable() throws SQLException {
         String createStocksTable = "CREATE TABLE IF NOT EXISTS Stocks ("
@@ -96,17 +97,12 @@ public class StockTradingAppDatabase {
         }
     }
 
-    // try { database.createPortfolioTable(); } catch (SQLException e) { throw new
-    // RuntimeException(e); }
-    // try { database.createStocksTable(); } catch (SQLException e) { throw new
-    // RuntimeException(e); }
-    // try { database.createTransactionsTable(); } catch (SQLException e) { throw
-    // new RuntimeException(e); }
-    // try {database.createUsersTable();} catch (SQLException e) {throw new
-    // RuntimeException(e);}
-    // try { database.createWatchlistTable(); } catch (SQLException e) { throw new
-    // RuntimeException(e); }
-    // try { database.createVirtualFundsTable(); } catch (SQLException e) { throw
-    // new RuntimeException(e); }
+
+//        try { database.createPortfolioTable(); } catch (SQLException e) { throw new RuntimeException(e); }
+//        try { database.createStocksTable(); } catch (SQLException e) { throw new RuntimeException(e); }
+//        try { database.createTransactionsTable(); } catch (SQLException e) { throw new RuntimeException(e); }
+//        try {database.createUsersTable();} catch (SQLException e) {throw new RuntimeException(e);}
+//        try { database.createWatchlistTable(); } catch (SQLException e) { throw new RuntimeException(e); }
+//        try { database.createVirtualFundsTable(); } catch (SQLException e) { throw new RuntimeException(e); }
 
 }
