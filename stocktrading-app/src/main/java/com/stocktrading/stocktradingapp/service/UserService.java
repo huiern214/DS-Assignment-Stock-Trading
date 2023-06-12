@@ -102,7 +102,7 @@ public class UserService {
     }    
 
     public User getUser(int userId) throws SQLException {
-        String getUserProfileQuery = "SELECT u.user_id, u.username, u.email, u.password, u.funds, p.stock_id, p.quantity, p.purchase_price " +
+        String getUserProfileQuery = "SELECT u.user_id, u.username, u.email, u.password, u.funds, p.stock_symbol, p.quantity, p.purchase_price " +
                 "FROM Users u " +
                 "LEFT JOIN Portfolio p ON u.user_id = p.user_id " +
                 "WHERE u.user_id = ?";
@@ -120,7 +120,7 @@ public class UserService {
                     String password = resultSet.getString("password");
                     double funds = resultSet.getDouble("funds");
 
-                    System.out.println("Stock ID: " + resultSet.getString("stock_id"));
+                    System.out.println("Stock Symbol: " + resultSet.getString("stock_symbol"));
                     System.out.println("Quantity: " + resultSet.getInt("quantity"));
                     System.out.println("Purchase Price: " + resultSet.getDouble("purchase_price"));
 
@@ -130,10 +130,10 @@ public class UserService {
                     user.setFunds(funds);
 
                     do {
-                        String stockId = resultSet.getString("stock_id");
+                        String symbol = resultSet.getString("stock_symbol");
                         int quantity = resultSet.getInt("quantity");
                         double purchasePrice = resultSet.getDouble("purchase_price");          
-                        Stock stock = stockTable.getStock(stockId); // Assuming a method to retrieve stock details
+                        Stock stock = stockTable.getStock(symbol); // Assuming a method to retrieve stock details
                         // System.out.println("Stock: " + stock.getName() + " " + stock.getSymbol() + " " + stock.getPrice());
                         Portfolio portfolio = new Portfolio();
                         portfolio.addStock(stock, quantity);

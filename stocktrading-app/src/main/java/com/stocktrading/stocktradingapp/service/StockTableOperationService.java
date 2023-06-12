@@ -29,11 +29,12 @@ public class StockTableOperationService {
         }
     }
 
-    public Stock getStock(String stockId) throws SQLException {
-        String getStockQuery = "SELECT company_name, stock_symbol, current_price FROM Stocks WHERE stock_id = ?";
+    public Stock getStock(String symbol) throws SQLException {
+        String getStockQuery = "SELECT * FROM Stocks WHERE stock_symbol = ?";
+        // String getStockQuery = "SELECT company_name, stock_symbol, current_price FROM Stocks WHERE stock_symbol = ?";
 
         try (PreparedStatement statement = connection.prepareStatement(getStockQuery)) {
-            statement.setString(1, stockId);
+            statement.setString(1, symbol);
 
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
