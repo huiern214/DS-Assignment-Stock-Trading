@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-// import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.stocktrading.stocktradingapp.model.MarketDepth;
@@ -71,18 +70,18 @@ public class StockListingController {
     @GetMapping("/bid-data/{symbol}")
     public List<MarketDepth> getBidData(@PathVariable String symbol) {
         List<MarketDepth> bidData = new ArrayList<>();
-        bidData.add(new MarketDepth("a", 100, 100, 1));
-        bidData.add(new MarketDepth("b", 200, 100, 2));
-        bidData.add(new MarketDepth("c", 300, 100, 3));
+        bidData.add(new MarketDepth("a", 10, 500, 5));
+        bidData.add(new MarketDepth("b", 20, 300, 4));
+        bidData.add(new MarketDepth("c", 30, 100, 2));
         return bidData;
     }
 
     @GetMapping("/ask-data/{symbol}")
     public List<MarketDepth> getAskData(@PathVariable String symbol) {
         List<MarketDepth> askData = new ArrayList<>();
-        askData.add(new MarketDepth("a", 400, 100, 1));
-        askData.add(new MarketDepth("b", 500, 100, 2));
-        askData.add(new MarketDepth("c", 600, 100, 3));
+        askData.add(new MarketDepth("a", 40, 100, 1));
+        askData.add(new MarketDepth("b", 50, 300, 3));
+        askData.add(new MarketDepth("c", 60, 500, 5));
         return askData;
     }
 

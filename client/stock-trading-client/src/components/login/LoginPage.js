@@ -1,8 +1,11 @@
+import axios from 'axios';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './LoginPage.css';
 import loginImage from './stock-icon.png';
 import success from './success.png';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginSuccess, loginFailure } from '../../redux/user/userActions';
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -14,6 +17,10 @@ function LoginPage() {
   const [passwordMatch, setPasswordMatch] = useState(true); // New state variable for password match validation
   const [showModal, setShowModal] = useState(false); // New state variable for modal visibility
 
+  const dispatch = useDispatch();
+  const error_message = useSelector(state => state.user.error);
+  const [showError, setShowError] = useState(false);
+  
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
   };
@@ -34,19 +41,48 @@ function LoginPage() {
     setUsername(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Handle login or sign-up logic here
+  
     if (isSignUp) {
-        if (!passwordMatch) {
-          return; // Disable form submission if passwords don't match
-        }
-        setShowModal(true); // Show modal on successful sign up
-      } else {
-        navigate('/', { replace: true }); // Redirect to home page on login
+      if (!passwordMatch) {
+        return; // Disable form submission if passwords don't match
       }
-  };
+  
+      try {
+        const response = await axios.post('http://localhost:8080/api/users/register', {
+          username: username,
+          email: email,
+          password: password
+        });
+  
+        if (response.status === 200) {
+          setShowModal(true); // Show modal on successful sign-up
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      try {
+        const response = await axios.post('http://localhost:8080/api/users/login', {
+          email: email,
+          password: password
+        });
+        
+        if (response.status === 200) {
+          const userId = response.data; // Assuming the response contains the user ID
+          dispatch(loginSuccess(userId)); // Dispatch the login action with the user ID
+          navigate(`/`, { replace: true }); // Redirect to the user's stocks page
+        }
+
+      } catch (error) {
+        console.log(error);
+        // error_message = "Incorrect login credentials";
+        dispatch(loginFailure("Incorrect login credentials"));
+        setShowError(true);
+      }
+    }
+  };  
 
   const handleSignUpClick = () => {
     setEmail('');
@@ -141,6 +177,9 @@ function LoginPage() {
             {isSignUp ? 'Sign Up' : 'Login'}
             </button>
         </form>
+        {showError && (
+          <p className="error-message">{error_message}</p>
+        )}
         {!isSignUp ? (
           <p className="signup-link">
             Not a member?{' '}
@@ -159,7 +198,7 @@ function LoginPage() {
       {showModal && (
         <div className="success-modal">
           <div className="success-modal-content">
-            <span className="modal-close" onClick={handleModalClose }>
+            <span className="modal-close" onClick={handleModalClose}>
               &times;
             </span>
             <div className="success-image">
