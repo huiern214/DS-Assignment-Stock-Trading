@@ -4,12 +4,19 @@ import * as AiIcons from 'react-icons/ai';
 import * as IoIcons from 'react-icons/io';
 import { Link, useLocation } from 'react-router-dom';
 import { SidebarData } from './SidebarData';
-import './Navbar.css';
 import { IconContext } from 'react-icons';
+import { useDispatch } from 'react-redux';
+import { logout } from '../../redux/user/userActions';
+import './Navbar.css';
 
 function Navbar() {
   const [sidebar, setSidebar] = useState(false);
   const location = useLocation();
+  const dispatch = useDispatch();
+
+  const handleLogout = () => {
+    dispatch(logout());
+  };
 
   const showSidebar = () => setSidebar(!sidebar);
 
@@ -30,7 +37,16 @@ function Navbar() {
         }
       ];
     } else {
-      return SidebarData;
+      return [
+        ...SidebarData,
+        {
+          title: 'Log Out',
+          path: '/login',
+          icon: <IoIcons.IoMdLogOut />,
+          cName: 'nav-text',
+          onClick: handleLogout
+        },
+      ];
     }
   };
 
@@ -52,7 +68,7 @@ function Navbar() {
             {renderSidebarData().map((item, index) => {
               return (
                 <li key={index} className={item.cName}>
-                  <Link to={item.path}>
+                  <Link to={item.path} onClick={item.onClick}>
                     {item.icon}
                     <span>{item.title}</span>
                   </Link>

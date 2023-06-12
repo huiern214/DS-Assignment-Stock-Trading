@@ -40,10 +40,10 @@ export const SidebarData = [
     icon: <IoIcons.IoMdPerson />,
     cName: 'nav-text'
   },
-  {
-    title: 'Log Out',
-    path: '/login',
-    icon: <IoIcons.IoMdLogOut />,
-    cName: 'nav-text'
-  }
+  // {
+  //   title: 'Log Out',
+    // path: '/login',
+  //   icon: <IoIcons.IoMdLogOut />,
+  //   cName: 'nav-text',
+  // }
 ];
