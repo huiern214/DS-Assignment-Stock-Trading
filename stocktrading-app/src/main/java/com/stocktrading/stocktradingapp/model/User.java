@@ -7,7 +7,7 @@ public class User {
     private String password;
     private double funds;
     private Portfolio portfolio;
-    
+
     public User(String username, String email, String password) {
         this.userId = -1;
         this.username = username;

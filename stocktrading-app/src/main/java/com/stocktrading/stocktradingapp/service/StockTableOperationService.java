@@ -10,7 +10,7 @@ import com.stocktrading.stocktradingapp.model.Stock;
 public class StockTableOperationService {
 
     private final String databaseUrl = "jdbc:sqlite:stocktrading-app/src/main/java/com/stocktrading/stocktradingapp/database/data.sqlite3";
-    private Connection connection = DriverManager.getConnection(databaseUrl);
+    private Connection connection;
     
     // establishes connection to the database
     public StockTableOperationService() throws SQLException {
@@ -50,22 +50,22 @@ public class StockTableOperationService {
         return null; // Stock not found
     }
 
-    public void removeStock(String stockId) throws SQLException {
+    public void removeStock(String symbol) throws SQLException {
         String removeStockQuery = "DELETE FROM Stocks WHERE stock_symbol = ?";
 
         try (PreparedStatement statement = connection.prepareStatement(removeStockQuery)) {
-            statement.setString(1, stockId);
+            statement.setString(1, symbol);
 
             statement.executeUpdate();
         }
     }
 
-    public void updateStockPrice(String stockId, double newPrice) throws SQLException {
+    public void updateStockPrice(String symbol, double newPrice) throws SQLException {
         String updateStockQuery = "UPDATE Stocks SET current_price = ? WHERE stock_symbol = ?";
 
         try (PreparedStatement statement = connection.prepareStatement(updateStockQuery)) {
             statement.setDouble(1, newPrice);
-            statement.setString(2, stockId);
+            statement.setString(2, symbol);
 
             statement.executeUpdate();
         }

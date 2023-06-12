@@ -1,11 +1,11 @@
 package com.stocktrading.stocktradingapp.controller;
 
 import com.stocktrading.stocktradingapp.model.User;
+import com.stocktrading.stocktradingapp.model.UserRegistrationDTO;
 import com.stocktrading.stocktradingapp.service.UserService;
 
 import java.sql.SQLException;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,9 +24,13 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody User user) {
+    public ResponseEntity<String> registerUser(@RequestBody UserRegistrationDTO user) {
         boolean success = false;
         try {
+            // Add validation for duplicate users
+            if (userService.checkDuplicateEmail(user.getEmail())) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email already exists");
+            }
             success = userService.addUser(user.getUsername(), user.getEmail(), user.getPassword());
         } catch (SQLException e) {
             e.printStackTrace();

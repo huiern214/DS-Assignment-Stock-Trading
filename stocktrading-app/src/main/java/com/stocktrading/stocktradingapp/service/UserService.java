@@ -15,11 +15,17 @@ import com.stocktrading.stocktradingapp.model.Portfolio;
 @Service
 public class UserService {
     private final String databaseUrl = "jdbc:sqlite:stocktrading-app/src/main/java/com/stocktrading/stocktradingapp/database/data.sqlite3";
+    private Connection connection;
+    
+    // establishes connection to the database
+    public UserService() throws SQLException {
+        connection = DriverManager.getConnection(databaseUrl);
+    }
 
+    // registers a user to the database
     // add user to the email by their username, email and password
     public boolean addUser(String username, String email, String password) throws SQLException {
-        try (Connection connection = DriverManager.getConnection(databaseUrl);
-             PreparedStatement statement = connection.prepareStatement("INSERT INTO Users (username, email, password) VALUES (?, ?, ?)")) {
+        try (PreparedStatement statement = connection.prepareStatement("INSERT INTO Users (username, email, password) VALUES (?, ?, ?)")) {
             statement.setString(1, username);
             statement.setString(2, email);
             statement.setString(3, password);
@@ -35,8 +41,7 @@ public class UserService {
 
     // deletes a user from the database
     public boolean deleteUser(int userId) throws SQLException {
-        try (Connection connection = DriverManager.getConnection(databaseUrl);
-             PreparedStatement statement = connection.prepareStatement("DELETE FROM Users WHERE user_id = ?")) {
+        try (PreparedStatement statement = connection.prepareStatement("DELETE FROM Users WHERE user_id = ?")) {
             statement.setInt(1, userId);
 
             statement.executeUpdate();
@@ -49,8 +54,7 @@ public class UserService {
     }
 
     public void updateUserEmail(int userId, String newEmail) throws SQLException {
-        try (Connection connection = DriverManager.getConnection(databaseUrl);
-             PreparedStatement statement = connection.prepareStatement("UPDATE Users SET email = ? WHERE user_id = ?")) {
+        try (PreparedStatement statement = connection.prepareStatement("UPDATE Users SET email = ? WHERE user_id = ?")) {
             statement.setString(1, newEmail);
             statement.setInt(2, userId);
 
@@ -59,8 +63,7 @@ public class UserService {
     }
 
     public void updateUserPassword(int userId, String newPassword) throws SQLException {
-        try (Connection connection = DriverManager.getConnection(databaseUrl);
-             PreparedStatement statement = connection.prepareStatement("UPDATE Users SET password = ? WHERE user_id = ?")) {
+        try (PreparedStatement statement = connection.prepareStatement("UPDATE Users SET password = ? WHERE user_id = ?")) {
             statement.setString(1, newPassword);
             statement.setInt(2, userId);
 
@@ -69,8 +72,7 @@ public class UserService {
     }
 
     public String getUserEmail(int userId) throws SQLException {
-        try (Connection connection = DriverManager.getConnection(databaseUrl);
-             PreparedStatement statement = connection.prepareStatement("SELECT email FROM Users WHERE user_id = ?")) {
+        try (PreparedStatement statement = connection.prepareStatement("SELECT email FROM Users WHERE user_id = ?")) {
             statement.setInt(1, userId);
 
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -83,10 +85,39 @@ public class UserService {
         return null; // Return null if user is not found
     }
 
+    public double getUserFunds(int userId) throws SQLException {
+        String getUserFundsQuery = "SELECT funds FROM Users WHERE user_id = ?";
+        try (PreparedStatement statement = connection.prepareStatement(getUserFundsQuery)) {
+            statement.setInt(1, userId);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getDouble("funds");
+                }
+            }
+        }
+        throw new SQLException("Failed to retrieve user funds");
+    }
+
+    // Add validation for duplicate users
+    public boolean checkDuplicateEmail(String email) throws SQLException {
+        String checkDuplicateEmailQuery = "SELECT email FROM Users WHERE email = ?";
+        try (PreparedStatement statement = connection.prepareStatement(checkDuplicateEmailQuery)) {
+            statement.setString(1, email);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+    // Authenticate user by email and password
     public int authenticateUser(String email, String password) {
         String query = "SELECT user_id FROM Users WHERE email = ? AND password = ?";
-        try (Connection connection = DriverManager.getConnection(databaseUrl);
-            PreparedStatement statement = connection.prepareStatement(query)) {
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, email);
             statement.setString(2, password);
     
@@ -101,13 +132,13 @@ public class UserService {
         return -1; // User not found or incorrect password
     }    
 
+    // Get user profile by user id
     public User getUser(int userId) throws SQLException {
         String getUserProfileQuery = "SELECT u.user_id, u.username, u.email, u.password, u.funds, p.stock_symbol, p.quantity, p.purchase_price " +
                 "FROM Users u " +
                 "LEFT JOIN Portfolio p ON u.user_id = p.user_id " +
                 "WHERE u.user_id = ?";
-        try (Connection connection = DriverManager.getConnection(databaseUrl);
-            PreparedStatement statement = connection.prepareStatement(getUserProfileQuery)) {
+        try (PreparedStatement statement = connection.prepareStatement(getUserProfileQuery)) {
             StockTableOperationService stockTable = new StockTableOperationService();
 
             statement.setInt(1, userId);
