@@ -20,6 +20,7 @@ function LoginPage() {
   const dispatch = useDispatch();
   const error_message = useSelector(state => state.user.error);
   const [showError, setShowError] = useState(false);
+  const [error, setError] = useState('');
   
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -60,7 +61,14 @@ function LoginPage() {
           setShowModal(true); // Show modal on successful sign-up
         }
       } catch (error) {
-        console.log(error);
+        // console.log(error);
+        if (error.response.status === 400) {
+          // Duplicate email error
+          setError('Email already exists');
+        } else {
+          // Other error
+          setError('Failed to register user');
+        }
       }
     } else {
       try {
@@ -180,6 +188,9 @@ function LoginPage() {
         {showError && (
           <p className="error-message">{error_message}</p>
         )}
+        {error && (
+          <p className="error-message">{error}</p>
+        )}
         {!isSignUp ? (
           <p className="signup-link">
             Not a member?{' '}
@@ -205,6 +216,9 @@ function LoginPage() {
               <img src={success} alt="Success" />
             </div>
             <h3>Sign Up Successfully</h3>
+            <div className="modal-buttons">
+              <button onClick={handleModalClose}>Login</button>
+            </div>
           </div>
         </div>
       )}  

@@ -80,7 +80,8 @@ border-color: #3d80c7;
 }
 
 .search-button:hover {
-  background-color: #686868;
+  /* background-color: #686868; */
+  background-color: #1a83ff;
   color: white;
   border: #000000;
 }

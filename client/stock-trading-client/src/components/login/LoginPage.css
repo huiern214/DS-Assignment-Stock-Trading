@@ -142,6 +142,8 @@
     justify-content: center;
     text-align: center;
     position: relative; 
+    /* space between each row item */
+    gap: 20px;
   }
   
   .success-image img {
