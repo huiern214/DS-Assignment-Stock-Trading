@@ -88,7 +88,6 @@ public class UsersTableOperations {
 
     /**
      * Used to add an entry to Portfolio with the user's id,
-     * 
      * @param userId
      * @throws SQLException
      */
@@ -103,8 +102,7 @@ public class UsersTableOperations {
 
     public UserProfile getUserProfile(int userId) throws SQLException {
         StockTableOperations stockTable = new StockTableOperations(this.connection);
-        String getUserProfileQuery = "SELECT u.user_id, u.username, u.email, u.funds, p.stock_id, p.quantity, p.purchase_price "
-                +
+        String getUserProfileQuery = "SELECT u.user_id, u.username, u.email, u.funds, p.stock_id, p.quantity, p.purchase_price " +
                 "FROM Users u " +
                 "LEFT JOIN Portfolio p ON u.user_id = p.user_id " +
                 "WHERE u.user_id = ?";
@@ -120,7 +118,7 @@ public class UsersTableOperations {
                     double funds = resultSet.getDouble("funds");
 
                     UserProfile userProfile = new UserProfile(fetchedUserId, username, email);
-                    userProfile.setFunds(connection, funds);
+                    userProfile.setFunds(connection,funds);
 
                     do {
                         String stockId = resultSet.getString("stock_id");
