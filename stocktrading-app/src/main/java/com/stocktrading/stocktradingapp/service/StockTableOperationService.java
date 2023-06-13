@@ -9,7 +9,7 @@ import com.stocktrading.stocktradingapp.model.Stock;
 @Service
 public class StockTableOperationService {
 
-    private final String databaseUrl = "jdbc:sqlite:stocktrading-app/src/main/java/com/stocktrading/stocktradingapp/database/data.sqlite3";
+    private final String databaseUrl = "jdbc:sqlite:stocktrading-app/database/data.sqlite3";
     private Connection connection;
     
     // establishes connection to the database
@@ -19,6 +19,12 @@ public class StockTableOperationService {
 
     public void addStock(String stockName, String stockSymbol, double currentPrice) throws SQLException {
         String addStockQuery = "INSERT INTO Stocks (company_name, stock_symbol, current_price) VALUES (?, ?, ?)";
+
+        // check if stock already exists
+        if (getStock(stockSymbol) != null) {
+            updateStockPrice(stockSymbol, currentPrice);
+            return;
+        }
 
         try (PreparedStatement statement = connection.prepareStatement(addStockQuery)) {
             statement.setString(1, stockName);
@@ -66,7 +72,6 @@ public class StockTableOperationService {
         try (PreparedStatement statement = connection.prepareStatement(updateStockQuery)) {
             statement.setDouble(1, newPrice);
             statement.setString(2, symbol);
-
             statement.executeUpdate();
         }
     }

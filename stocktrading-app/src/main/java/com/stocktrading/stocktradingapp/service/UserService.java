@@ -14,7 +14,7 @@ import com.stocktrading.stocktradingapp.model.Portfolio;
 
 @Service
 public class UserService {
-    private final String databaseUrl = "jdbc:sqlite:stocktrading-app/src/main/java/com/stocktrading/stocktradingapp/database/data.sqlite3";
+    private final String databaseUrl = "jdbc:sqlite:stocktrading-app/database/data.sqlite3";
     private Connection connection;
     
     // establishes connection to the database

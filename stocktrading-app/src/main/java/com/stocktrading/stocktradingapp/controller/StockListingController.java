@@ -1,5 +1,6 @@
 package com.stocktrading.stocktradingapp.controller;
 
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,12 +27,8 @@ import com.stocktrading.stocktradingapp.service.StockListingService;
 @CrossOrigin(origins = "*", exposedHeaders = "last-update")
 public class StockListingController {
 
-    private final StockListingService stockListingService;
-
     @Autowired
-    public StockListingController(StockListingService stockListingService) {
-        this.stockListingService = stockListingService;
-    }
+    private StockListingService stockListingService;
 
     @GetMapping
     public ResponseEntity<PriorityQueue<Stock>> getAllStocks() {
@@ -55,7 +52,7 @@ public class StockListingController {
     }
 
     @GetMapping("/refresh")
-    public ResponseEntity<String> refreshStocks() {
+    public ResponseEntity<String> refreshStocks() throws SQLException {
         stockListingService.refreshStockData();
         return ResponseEntity.ok().body("Stock data refreshed successfully");
     }

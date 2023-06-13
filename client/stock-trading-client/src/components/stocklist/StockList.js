@@ -19,26 +19,28 @@ const StockList = () => {
       console.log(updateTime);
       setLastUpdateTime(updateTime);
       
+      // setTimeout(fetchStockData, 1 * 60 * 1000); // Fetch stock data every 1 minutes
+      setTimeout(fetchStockData, 5000); // Fetch stock data every 5 seconds
     } catch (error) {
       console.error('Error fetching stock data:', error);
+      setTimeout(fetchStockData, 5000); // Retry fetching stock data after 5 seconds in case of an error
     }
   };
   
-  const refreshStockData = async () => {
-    try {
-      await axios.get('http://localhost:8080/stocks/refresh');
-      fetchStockData();
-    } catch (error) {
-      console.error('Error refreshing stock data:', error);
-    }
-  };
+  // const refreshStockData = async () => {
+  //   try {
+  //     await axios.get('http://localhost:8080/stocks/refresh');
+  //     fetchStockData();
+  //   } catch (error) {
+  //     console.error('Error refreshing stock data:', error);
+  //   }
+  // };
   
   useEffect(() => {
-    fetchStockData();
-    const timer = setInterval(refreshStockData, 5 * 60 * 1000);
+    fetchStockData(); // Initial data fetch
   
     return () => {
-      clearInterval(timer);
+      clearTimeout(fetchStockData);
     };
   }, []);
 
