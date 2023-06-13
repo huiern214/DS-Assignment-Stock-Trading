@@ -19,8 +19,8 @@ const StockList = () => {
       console.log(updateTime);
       setLastUpdateTime(updateTime);
       
-      // setTimeout(fetchStockData, 1 * 60 * 1000); // Fetch stock data every 1 minutes
-      setTimeout(fetchStockData, 5000); // Fetch stock data every 5 seconds
+      setTimeout(fetchStockData, 1 * 60 * 1000); // Fetch stock data every 1 minutes
+      // setTimeout(fetchStockData, 5000); // Fetch stock data every 5 seconds
     } catch (error) {
       console.error('Error fetching stock data:', error);
       setTimeout(fetchStockData, 5000); // Retry fetching stock data after 5 seconds in case of an error
@@ -51,6 +51,7 @@ const StockList = () => {
       });
       const searchResults = Array.from(response.data);
       setStocks(searchResults);
+      console.log(searchResults);
 
     } catch (error) {
       console.error('Error searching stocks:', error);
