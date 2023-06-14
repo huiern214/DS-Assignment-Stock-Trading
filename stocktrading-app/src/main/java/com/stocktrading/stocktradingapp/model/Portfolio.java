@@ -10,15 +10,16 @@ public class Portfolio {
         holdings = new HashMap<>();
     }
 
-    public void addStock(Stock stock, int shares) {
-        int currentShares = holdings.getOrDefault(stock, 0);
-        holdings.put(stock, currentShares + shares);
+    // qty is number of lots sold (1 lot = 100 shares)
+    public void addStock(Stock stock, int qty) {
+        int currentQty = holdings.getOrDefault(stock, 0);
+        holdings.put(stock, currentQty + qty);
     }
 
-    public void removeStock(Stock stock, int shares) {
-        int currentShares = holdings.getOrDefault(stock, 0);
-        if (currentShares >= shares) {
-            holdings.put(stock, currentShares - shares);
+    public void removeStock(Stock stock, int qty) {
+        int currentQty = holdings.getOrDefault(stock, 0);
+        if (currentQty >= qty) {
+            holdings.put(stock, currentQty - qty);
         }
     }
 
@@ -30,8 +31,8 @@ public class Portfolio {
         double value = 0.0;
         for (Map.Entry<Stock, Integer> entry : holdings.entrySet()) {
             Stock stock = entry.getKey();
-            int shares = entry.getValue();
-            value += stock.getPrice() * shares;
+            int qty = entry.getValue();
+            value += stock.getPrice() * qty * 100;
         }
         return value;
     }

@@ -151,7 +151,7 @@ public class UserService {
                     String password = resultSet.getString("password");
                     double funds = resultSet.getDouble("funds");
 
-                    System.out.println("Stock Symbol: " + resultSet.getString("stock_symbol"));
+                    System.out.println("\nStock Symbol: " + resultSet.getString("stock_symbol"));
                     System.out.println("Quantity: " + resultSet.getInt("quantity"));
                     System.out.println("Purchase Price: " + resultSet.getDouble("purchase_price"));
 
@@ -162,10 +162,8 @@ public class UserService {
 
                     do {
                         String symbol = resultSet.getString("stock_symbol");
-                        int quantity = resultSet.getInt("quantity");
-                        double purchasePrice = resultSet.getDouble("purchase_price");          
-                        Stock stock = stockTable.getStock(symbol); // Assuming a method to retrieve stock details
-                        // System.out.println("Stock: " + stock.getName() + " " + stock.getSymbol() + " " + stock.getPrice());
+                        int quantity = resultSet.getInt("quantity");      
+                        Stock stock = stockTable.getStock(symbol);
                         Portfolio portfolio = new Portfolio();
                         portfolio.addStock(stock, quantity);
                         user.setPortfolio(portfolio);
