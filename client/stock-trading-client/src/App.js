@@ -1,5 +1,5 @@
 import './App.css';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import StockList from './components/stocklist/StockList';
 import Layout from './components/Layout';
 import Navbar from './components/sidebar/Navbar';
@@ -15,8 +15,9 @@ function App() {
         <Navbar />
         <Routes>
           <Route path="/" element={<Layout/>}>
+            <Route path="/" element={<Navigate to="/login" replace />} />
             <Route path="/login" element={<LoginPage />} />
-            <Route path="/" element={<StockList />} ></Route>
+            <Route path="/stocks" element={<StockList />} ></Route>
             <Route path="/stocks/:stockId" element={<Stock />}></Route>
             <Route path="/dashboard" element={<Dashboard />}></Route>
             <Route path="/profile" element={<Profile />}></Route>
