@@ -1,0 +1,97 @@
+.dashboard-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f4f4f4;
+    border-radius: 5px;
+  }
+  
+  h1 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .dashboard-section {
+    margin-bottom: 30px;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  table th,
+  table td {
+    padding: 8px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .dashboard-stats {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  
+  .dashboard-stats > div {
+    flex-basis: calc(25% - 20px);
+    text-align: center;
+    margin-bottom: 20px;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .dashboard-stats h2 {
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+  
+  p {
+    font-size: 16px;
+    margin: 0;
+  }
+
+  .stats-text {
+    font-size: 25px;
+  }
+  
+  .red {
+    color: red;
+  }
+  
+  .green {
+    color: green;
+  }
+  
+  .small-text {
+    font-size: 12px;
+    color: gray;
+  }
+
+  .points {
+    font-size: 25px;
+  }  
+
+  .pnl-box {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 7px;
+  }
+  
+  .red {
+    background-color: rgb(254, 74, 74);
+    color: white;
+  }
+  
+  .green {
+    background-color: rgb(63, 159, 63);
+    color: white;
+  }
+  
+  

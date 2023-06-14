@@ -67,5 +67,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+    // Example output:
+    // {"userId":1,"username":"Ali","email":"Ali@gmail.com","password":"1234","funds":48689.0,"portfolio":{"holdings":{"AMMB Holdings Berhad (AMBANK)":5},"value":1775.0}}
 
 }

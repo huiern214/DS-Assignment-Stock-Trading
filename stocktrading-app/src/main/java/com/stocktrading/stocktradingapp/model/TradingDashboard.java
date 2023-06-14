@@ -55,6 +55,15 @@ public class TradingDashboard {
         return totalPnL;
     }
 
+    // Get the current realised PnL in percentage
+    public double getTotalPnLPercentage() {
+        double investedAmount = 0;
+        for (Trade trade : tradeHistory) {
+            investedAmount += (trade.getEntryPrice() * trade.getqtySold() * 100);
+        }
+        return totalPnL / investedAmount * 100;
+    }
+
     // Get the total points gained or lost by the user
     public double getTotalPoints() {
         return getTotalPnL() / startingAccBalance * 100;
@@ -68,6 +77,15 @@ public class TradingDashboard {
             totalUnrealisedPnL += position.getPnL();
         }
         return totalUnrealisedPnL;
+    }
+
+    // Get the current unrealised PnL in percentage
+    public double getUnrealisedPnLPercentage() {
+        double investedAmount = 0;
+        for (Trade trade : openPositions) {
+            investedAmount += (trade.getEntryPrice() * trade.getqtySold() * 100);
+        }
+        return getUnrealisedPnL() / investedAmount * 100;
     }
 
     // Get the open positions of the user by symbol
