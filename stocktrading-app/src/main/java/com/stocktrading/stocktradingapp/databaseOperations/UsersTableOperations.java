@@ -100,45 +100,6 @@ public class UsersTableOperations {
         }
     }
 
-    public UserProfile getUserProfile(int userId) throws SQLException {
-        StockTableOperations stockTable = new StockTableOperations(this.connection);
-        String getUserProfileQuery = "SELECT u.user_id, u.username, u.email, u.funds, p.stock_id, p.quantity, p.purchase_price " +
-                "FROM Users u " +
-                "LEFT JOIN Portfolio p ON u.user_id = p.user_id " +
-                "WHERE u.user_id = ?";
-
-        try (PreparedStatement statement = connection.prepareStatement(getUserProfileQuery)) {
-            statement.setInt(1, userId);
-
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    int fetchedUserId = resultSet.getInt("user_id");
-                    String username = resultSet.getString("username");
-                    String email = resultSet.getString("email");
-                    double funds = resultSet.getDouble("funds");
-
-                    UserProfile userProfile = new UserProfile(fetchedUserId, username, email);
-                    userProfile.setFunds(connection,funds);
-
-                    do {
-                        String stockId = resultSet.getString("stock_id");
-                        int quantity = resultSet.getInt("quantity");
-                        double purchasePrice = resultSet.getDouble("purchase_price");
-
-                        Stock stock = stockTable.getStock(stockId); // Assuming a method to retrieve stock details
-                        PortfolioItem portfolioItem = new PortfolioItem(stock, quantity, purchasePrice);
-
-                        userProfile.addPortfolioItem(portfolioItem);
-                    } while (resultSet.next());
-
-                    return userProfile;
-                }
-            }
-        }
-
-        return null; // User not found
-    }
-
     public double getUserFunds(int userId) throws SQLException {
         String getUserFundsQuery = "SELECT funds FROM Users WHERE user_id = ?";
         try (PreparedStatement statement = connection.prepareStatement(getUserFundsQuery)) {
@@ -151,6 +112,21 @@ public class UsersTableOperations {
             }
         }
         throw new SQLException("Failed to retrieve user funds");
+    }
+
+    public void updateUserFunds(int userId,double newFunds) throws SQLException {
+        String updateUserFundsQuery = "UPDATE Users SET funds = ? WHERE user_id = ?";
+        try (PreparedStatement statement = connection.prepareStatement(updateUserFundsQuery)) {
+            statement.setDouble(1, newFunds);
+            statement.setInt(2, userId);
+
+            statement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new SQLException("Failed to set user funds");
+        }
+
+
     }
 
     // Additional methods for retrieving user information or performing other
