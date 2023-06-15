@@ -113,7 +113,14 @@ const Stock = () => {
         });
         console.log('Stock bought successfully.');
         toast.success('Stock bought successfully.');
+
+        // Send email notification
+        await api.post(`/api/email/${userId}`, {
+          subject: 'Stock Purchase Confirmation',
+          body: `You have successfully purchased ${numberOfShares} shares of ${key}.`,
+        });
         window.location.reload();
+
       } else if (action === 'sell') {
         await api.post('/api/buysell/sell', {
           stockSymbol: key,
@@ -123,6 +130,13 @@ const Stock = () => {
         });
         console.log('Stock sold successfully.');
         toast.success('Stock sold successfully.');
+
+        // Send email notification
+        await api.post(`/api/email/${userId}`, {
+          subject: 'Stock Sale Confirmation',
+          body: `You have successfully sold ${numberOfShares} shares of ${key}.`,
+        });
+        
         window.location.reload();
       }
   

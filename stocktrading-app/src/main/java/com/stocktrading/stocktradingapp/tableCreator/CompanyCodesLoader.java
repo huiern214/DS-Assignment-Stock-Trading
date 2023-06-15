@@ -1,4 +1,4 @@
-package com.stocktrading.stocktradingapp.databaseOperations;
+package com.stocktrading.stocktradingapp.tableCreator;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
