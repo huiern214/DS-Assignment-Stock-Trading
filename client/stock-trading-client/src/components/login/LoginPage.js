@@ -80,7 +80,11 @@ function LoginPage() {
         if (response.status === 200) {
           const userId = response.data; // Assuming the response contains the user ID
           dispatch(loginSuccess(userId)); // Dispatch the login action with the user ID
-          navigate(`/stocks`, { replace: true }); // Redirect to the user's stocks page
+          if (userId < 0) {
+            navigate(`/user_management`, { replace: true }); // Redirect to the user's stocks page
+          } else { 
+            navigate(`/stocks`, { replace: true }); // Redirect to the user's stocks page
+          }
         }
 
       } catch (error) {

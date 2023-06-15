@@ -1,4 +1,4 @@
-package com.stocktrading.stocktradingapp.model;
+package com.stocktrading.stocktradingapp.model.DTO;
 
 public class SearchRequest {
     private String query;

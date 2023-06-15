@@ -1,0 +1,96 @@
+.stock-management-container {
+    text-align: center;
+    padding: 20px;
+  }
+  
+  .stock-management-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+
+  .stock-submit {
+    /* all the div in same row */
+    display: flex;
+    justify-content: right;
+    align-items: left;
+    margin-bottom: 10px;
+    margin-right: 14%;
+  }
+  
+  .stock-management-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 0px;
+  }
+  
+  .stock-select,
+  .stock-input {
+    padding: 8px;
+    margin-left: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+  .stock-input:focus {
+    outline: none;
+    border-color: #3d80c7;
+  }
+
+  .stock-delete-button {
+    background-color: rgb(254, 74, 74);
+    color: white;
+    font-display: flex;
+    height: 29px;
+    align-items: center; /* Center vertically */
+    border-radius: 4px; /* Set the border radius for rounded corners */
+    padding: 15px 20px; /* Set the padding for the button */
+    font-size: 14px; /* Set the font size */
+    text-align: center;
+    border: none; /* Remove the default button border */
+    cursor: pointer; /* Set the cursor to indicate it's clickable */
+    line-height: 3px;
+  }
+  .stock-delete-button:hover {
+    background-color: #686868;
+    color: white;
+    border: #000000;
+  }
+  .stock-add-button {
+    background-color: rgb(63, 159, 63);
+    color: white;
+    font-display: flex;
+    height: 29px;
+    align-items: center; /* Center vertically */
+    border-radius: 4px; /* Set the border radius for rounded corners */
+    padding: 15px 20px; /* Set the padding for the button */
+    font-size: 14px; /* Set the font size */
+    text-align: center;
+    border: none; /* Remove the default button border */
+    cursor: pointer; /* Set the cursor to indicate it's clickable */
+    line-height: 3px;
+    }
+    .stock-add-button:hover {
+        background-color: #686868;
+        color: white;
+        border: #000000;
+    }
+  
+  .stock-table {
+    /* width: 80%; */
+    border-collapse: collapse;
+    /* margin-top: 20px; */
+  }
+  
+  .stock-table th,
+  .stock-table td {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  .stock-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+  }
+  
