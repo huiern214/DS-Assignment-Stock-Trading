@@ -52,7 +52,9 @@ public class BuySell {
         }
 
         //Check if the amount of stock in the system and order is sufficient for the buyer's desired amount
+        //If there are not enough amount in the system plus portfolio of sellers, then it will be listed as an Order.
         if (!(tempSystemStockQuantity + totalQuantityInMatchingOrders >= desiredQuantity)){
+            ordersTableOperations.insertOrder(buyerId, stockSymbol, "BUY", desiredQuantity, desiredPrice);
             return;
         }
 
@@ -233,6 +235,8 @@ public class BuySell {
 
         int leftoverStockQuantity = desiredQuantity;
         int totalQuantityInMatchingOrders = 0;
+        boolean isMatchOrdersEmpty = matchingOrders.isEmpty();
+
         //Check if the matchingOrders meets the desiredQuantity of stocks to be sold
         for (Order matchingOrder : matchingOrders){
             totalQuantityInMatchingOrders = totalQuantityInMatchingOrders + matchingOrder.getQuantity();
@@ -320,14 +324,14 @@ public class BuySell {
         }
 
         //If there are still leftover quantity to be sold, then the remaining will be placed as an Order
-        if (leftoverStockQuantity > 0){
+        if (leftoverStockQuantity > 0 && (isMatchOrdersEmpty == false)){
             ordersTableOperations.insertOrder(sellerId, stockSymbol, "SELL", leftoverStockQuantity, desiredPrice);
         }
 
     }
 
     //Only used in selling stock to update the buyer's side of the trade when the quantity in the buyer's order is bigger than the seller's first portfolio amount
-    public void executeSellTrade(String stockSymbol, double tradePrice, int tradeQuantity, int buyerId, double buyerPrice,
+    private void executeSellTrade(String stockSymbol, double tradePrice, int tradeQuantity, int buyerId, double buyerPrice,
                              int buyerQuantity, int orderId) throws SQLException {
         // Calculate the total trade value
         double totalTradeValue = tradePrice * tradeQuantity;
@@ -354,7 +358,7 @@ public class BuySell {
     }
 
     //Only used in selling stock to update the buyer's side of the trade when the quantity in the buyer's order is smaller than the seller's first portfolio amount
-    public void executePartialSellTrade(String stockSymbol, double tradePrice, int tradeQuantity, int buyerId, double buyerPrice,
+    private void executePartialSellTrade(String stockSymbol, double tradePrice, int tradeQuantity, int buyerId, double buyerPrice,
                                     int buyerQuantity, int orderId) throws SQLException {
         // Calculate the total trade value
         double totalTradeValue = tradePrice * buyerQuantity;

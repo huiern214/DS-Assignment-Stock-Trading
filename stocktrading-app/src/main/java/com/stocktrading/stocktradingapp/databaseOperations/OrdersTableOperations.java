@@ -15,7 +15,7 @@ public class OrdersTableOperations {
     }
 
     public int insertOrder(int userId, String stockSymbol, String orderType, int quantity, double price) throws SQLException {
-        String insertOrderQuery = "INSERT INTO Orders (user_id, stock_symbol, order_type, quantity, price) VALUES (?, ?, ?, ?, ?, ?)";
+        String insertOrderQuery = "INSERT INTO Orders (user_id, stock_symbol, order_type, quantity, price) VALUES (?, ?, ?, ?, ?)";
         int orderId = -1;
 
         try (PreparedStatement statement = connection.prepareStatement(insertOrderQuery, PreparedStatement.RETURN_GENERATED_KEYS)) {
@@ -24,7 +24,6 @@ public class OrdersTableOperations {
             statement.setString(3, orderType);
             statement.setInt(4, quantity);
             statement.setDouble(5, price);
-            statement.setString(6, "Pending");
 
             statement.executeUpdate();
 
