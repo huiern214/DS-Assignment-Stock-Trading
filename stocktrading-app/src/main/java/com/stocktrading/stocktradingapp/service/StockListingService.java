@@ -89,8 +89,10 @@ public class StockListingService implements InitializingBean {
         this.stockQueue = stockService.getStockData(company_symbols);
 
         // Add the stock data to the stock table if not exist, update if exist
-        for (Stock stock : stockQueue) {
-            stockTableOperationService.addStock(stock.getName(), stock.getSymbol(), stock.getPrice());
+        if (stockQueue != null){
+            for (Stock stock : this.stockQueue) {
+                stockTableOperationService.addStock(stock.getName(), stock.getSymbol(), stock.getPrice());
+            }
         }
     }
 

@@ -10,6 +10,7 @@ import Profile from './components/profile/Profile';
 import Dashboard from './components/dashboard/Dashboard';
 import UserManagement from './components/admin/UserManagement';
 import StockManagement from './components/admin/StockManagement';
+import News from './components/news/News';
 
 function App() {
 
@@ -32,6 +33,7 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/stocks" element={<StockList />} ></Route>
             <Route path="/stocks/:stockId" element={<Stock />}></Route>
+            <Route path="/news" element={<News />}></Route>
             <Route path="/dashboard" element={<Dashboard />}></Route>
             <Route path="/profile" element={<Profile />}></Route>
             {renderRestrictedRoute(<UserManagement />, '/user_management')}

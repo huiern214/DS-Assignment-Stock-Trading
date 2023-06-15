@@ -1,0 +1,75 @@
+/* News.css */
+.news-container {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .news-header {
+    margin-left: 11%;
+    font-size: 30px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    text-decoration: underline;
+  }
+  
+  .news-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    background-color: #f8f8f8;
+    padding: 10px;
+    border-radius: 8px;
+    margin: 10%;
+    margin-top: 0;
+    margin-bottom: 2%;
+  }
+  
+  .news-image {
+    /* width: 200px;
+    height: 150px; */
+    width: 30%;
+    height: 100%;
+    object-fit: cover;
+    margin-right: 10px;
+  }
+  
+  .news-details {
+    flex: 1;
+    width: 70%;
+    /* left */
+    text-align: left;
+    
+  }
+  
+  .news-title {
+    font-size: 25px;
+    margin-bottom: 5px;
+  }
+  
+  .news-description {
+    margin-bottom: 10px;
+  }
+  
+  .news-published-at,
+  .news-source {
+    font-size: 14px;
+    margin-bottom: 5px;
+  }
+  
+  .news-read-more {
+    display: inline-block;
+    padding: 5px 10px;
+    background-color: #3a8ae6;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 4px;
+    /* left */
+    /* text-align: left; */
+    /* i want item left align ,move to left */
+    margin-right: 0;
+  }
+  
+  .news-read-more:hover {
+    background-color: #1a83ff;
+  }
+  
