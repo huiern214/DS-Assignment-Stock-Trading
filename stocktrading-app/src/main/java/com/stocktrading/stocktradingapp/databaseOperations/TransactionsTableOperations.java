@@ -15,7 +15,7 @@ public class TransactionsTableOperations {
         this.connection = connection;
     }
 
-    public void insertTransaction(int userId, String stockSymbol, String transactionType, int quantity, double price) throws SQLException {
+    public void insertTransaction(int userId, String stockSymbol, double price,int quantity, String transactionType) throws SQLException {
         String insertTransactionQuery = "INSERT INTO Transactions (user_id, stock_symbol, transaction_type, quantity, price, timestamp) VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP)";
 
         try (PreparedStatement statement = connection.prepareStatement(insertTransactionQuery)) {

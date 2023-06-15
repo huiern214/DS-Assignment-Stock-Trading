@@ -22,11 +22,11 @@ public class StockTableOperations {
         }
     }
 
-    public Stock getStock(String stockId) throws SQLException {
+    public Stock getStock(String stockSym) throws SQLException {
         String getStockQuery = "SELECT company_name, stock_symbol, current_price  FROM Stocks WHERE stock_symbol = ?";
 
         try (PreparedStatement statement = connection.prepareStatement(getStockQuery)) {
-            statement.setString(1, stockId);
+            statement.setString(1, stockSym);
 
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
@@ -61,5 +61,38 @@ public class StockTableOperations {
 
             statement.executeUpdate();
         }
+    }
+
+    public void updateStockQuantity(String stockSymbol, int quantity) {
+        String query = "UPDATE Stocks SET quantity = ? WHERE stock_symbol = ?";
+
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, quantity);
+            statement.setString(2, stockSymbol);
+
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            // Handle any potential exceptions
+            e.printStackTrace();
+        }
+    }
+
+    public int getStockQuantity(String stockSymbol) {
+        String query = "SELECT quantity FROM Stocks WHERE stock_symbol = ?";
+
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, stockSymbol);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getInt("quantity");
+                }
+            }
+        } catch (SQLException e) {
+            // Handle any potential exceptions
+            e.printStackTrace();
+        }
+
+        return 0; // Return 0 if the stock symbol is not found or an error occurs
     }
 }

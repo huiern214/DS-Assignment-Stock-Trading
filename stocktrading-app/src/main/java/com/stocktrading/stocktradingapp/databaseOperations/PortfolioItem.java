@@ -1,14 +1,16 @@
 package com.stocktrading.stocktradingapp.databaseOperations;
 
 public class PortfolioItem {
+    private int portfolioId;
     private Stock stock;
     private int quantity;
     private double purchasePrice;
 
-    public PortfolioItem(Stock stock, int quantity, double purchasePrice) {
+    public PortfolioItem( int portfolioId,Stock stock, int quantity, double purchasePrice) {
         this.stock = stock;
         this.quantity = quantity;
         this.purchasePrice = purchasePrice;
+        this.portfolioId = portfolioId;
     }
 
     public Stock getStock() {
@@ -22,4 +24,6 @@ public class PortfolioItem {
     public double getPurchasePrice() {
         return purchasePrice;
     }
+
+    public int getPortfolioId() { return portfolioId; }
 }
