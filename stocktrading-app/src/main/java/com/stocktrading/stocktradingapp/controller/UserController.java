@@ -1,7 +1,7 @@
 package com.stocktrading.stocktradingapp.controller;
 
 import com.stocktrading.stocktradingapp.model.User;
-import com.stocktrading.stocktradingapp.model.UserRegistrationDTO;
+import com.stocktrading.stocktradingapp.model.DTO.UserRegistrationDTO;
 import com.stocktrading.stocktradingapp.service.UserService;
 
 import java.sql.SQLException;
@@ -46,11 +46,11 @@ public class UserController {
         String email = loginInfo.get("email");
         String password = loginInfo.get("password");
 
-        int userId = userService.authenticateUser(email, password);
-        if (userId != -1) {
+        Integer userId = userService.authenticateUser(email, password);
+        if (userId != null) {
             return ResponseEntity.ok(userId);
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(-1);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
     }
 
     @GetMapping("/{user_id}")

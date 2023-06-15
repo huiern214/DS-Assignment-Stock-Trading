@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
@@ -115,12 +117,15 @@ public class UserService {
     }
     
     // Authenticate user by email and password
-    public int authenticateUser(String email, String password) {
+    public Integer authenticateUser(String email, String password) {
         String query = "SELECT user_id FROM Users WHERE email = ? AND password = ?";
+        String query2 = "SELECT admin_id FROM Admins WHERE email = ? AND password = ?";
+
+        // Check user (query) and admin (query2) tables for email and password
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, email);
             statement.setString(2, password);
-    
+
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
                     return resultSet.getInt("user_id");
@@ -129,7 +134,21 @@ public class UserService {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return -1; // User not found or incorrect password
+
+        try (PreparedStatement statement = connection.prepareStatement(query2)) {
+            statement.setString(1, email);
+            statement.setString(2, password);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return -(resultSet.getInt("admin_id"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null; // User not found or incorrect password
     }    
 
     // Get user profile by user id
@@ -175,5 +194,29 @@ public class UserService {
         }
 
         return null; // User not found
+    }
+
+    // Get all users
+    public List<User> getAllUsers() throws SQLException {
+        String getAllUsersQuery = "SELECT * FROM Users";
+        try (PreparedStatement statement = connection.prepareStatement(getAllUsersQuery)) {
+            try (ResultSet resultSet = statement.executeQuery()) {
+                List<User> users = new ArrayList<>();
+                while (resultSet.next()) {
+                    int userId = resultSet.getInt("user_id");
+                    String username = resultSet.getString("username");
+                    String email = resultSet.getString("email");
+                    String password = resultSet.getString("password");
+                    double funds = resultSet.getDouble("funds");
+
+                    User user = new User(username, email, password);
+                    user.setUserId(userId);
+                    user.setFunds(funds);
+
+                    users.add(user);
+                }
+                return users;
+            }
+        }
     }
 }

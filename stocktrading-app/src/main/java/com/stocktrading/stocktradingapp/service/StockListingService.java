@@ -1,6 +1,10 @@
 package com.stocktrading.stocktradingapp.service;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Timer;
@@ -17,10 +21,11 @@ import com.stocktrading.stocktradingapp.model.Stock;
 @Service
 public class StockListingService implements InitializingBean {
 
-    final String[] COMPANY_CODES = {
-        "5296", "1015", "1066", "1295", "1961", "3182", "5225", "4707", "4863", "5347", 
-        "6888", "1023", "7277", "6947", "3034", "5168", "5819", "1082", "5235SS", "2445", 
-        "1155", "6012", "3816", "5183", "5681", "6033", "4065", "8869", "4197", "5285"};
+    // final String[] COMPANY_CODES = {
+    //     "5296", "1015", "1066", "1295", "1961", "3182", "5225", "4707", "4863", "5347", 
+    //     "6888", "1023", "7277", "6947", "3034", "5168", "5819", "1082", "5235SS", "2445", 
+    //     "1155", "6012", "3816", "5183", "5681", "6033", "4065", "8869", "4197", "5285"};
+    private List<String> COMPANY_CODES = new ArrayList<>();
 
     private final StockService stockService;
     private final StockTableOperationService stockTableOperationService;
@@ -50,17 +55,33 @@ public class StockListingService implements InitializingBean {
         return stockQueue;
     }
 
+    public List<String> getCOMPANY_CODES() {
+        return COMPANY_CODES;
+    }
+
     public void setLastUpdateTime(LocalDateTime lastUpdateTime) {
         this.lastUpdateTime = lastUpdateTime;
     }
 
     // Initialize the stockQueue from the stock table in the database
     private void initializeStockQueue() throws SQLException {
+        try (Connection connection = DriverManager.getConnection("jdbc:sqlite:stocktrading-app/database/data.sqlite3")) {
+            String selectQuery = "SELECT code FROM CompanyCodes";
+            try (Statement statement = connection.createStatement(); ResultSet rs = statement.executeQuery(selectQuery)) {
+                while (rs.next()) {
+                    String code = rs.getString("code");
+                    COMPANY_CODES.add(code);
+                }
+            }
+        }
+
+        // Build the symbols string
         StringBuilder symbolsBuilder = new StringBuilder();
         for (String code : COMPANY_CODES) {
             symbolsBuilder.append(code).append(".KL,");
         }
-        // delete last character
+
+        // Delete last character
         symbolsBuilder.deleteCharAt(symbolsBuilder.length() - 1);
         String company_symbols = symbolsBuilder.toString();
 
@@ -124,17 +145,25 @@ public class StockListingService implements InitializingBean {
     // Refresh the stock data in the stockQueue
     public void refreshStockData() throws SQLException {
         setLastUpdateTime(LocalDateTime.now());
-    
-        // Create a string of symbols separated by commas
+
+        // // Create a string of symbols separated by commas
+        // StringBuilder symbolsBuilder = new StringBuilder();
+        // for (Stock stock : stockQueue) {
+        //     symbolsBuilder.append(stock.getSymbol()).append(",");
+        // }
+
+        // Build the symbols string
         StringBuilder symbolsBuilder = new StringBuilder();
-        for (Stock stock : stockQueue) {
-            symbolsBuilder.append(stock.getSymbol()).append(",");
+        for (String code : COMPANY_CODES) {
+            symbolsBuilder.append(code).append(".KL,");
         }
+
+        // Delete last character
         symbolsBuilder.deleteCharAt(symbolsBuilder.length() - 1);
-        String symbols = symbolsBuilder.toString();
+        String company_symbols = symbolsBuilder.toString();
     
         // Get the updated stock data for all symbols
-        PriorityQueue<Stock> updatedStocks = stockService.getStockData(symbols);
+        PriorityQueue<Stock> updatedStocks = stockService.getStockData(company_symbols);
     
         // Update the stock data in the stockQueue
         if (updatedStocks != null) {
