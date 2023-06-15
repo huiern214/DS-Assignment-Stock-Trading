@@ -1,0 +1,68 @@
+.user-management-container {
+    text-align: center;
+    padding: 20px;
+  }
+  
+  h1 {
+    margin-bottom: 20px;
+  }
+  
+  .user-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+  
+  th,
+  td {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+  }
+  
+  .delete-user-container {
+    margin-top: 20px;
+    /* right */
+    margin-left: 60%;
+    margin-bottom: 1%;
+  }
+  
+  .user-delete-input {
+    padding: 8px;
+    margin-left: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  
+  .user-delete-input:focus {
+    outline: none;
+    border-color: #3d80c7;
+   }
+
+  .delete-button {
+    background-color: rgb(254, 74, 74);
+    color: white;
+    height: 29px;
+    align-items: center; /* Center vertically */
+    border-radius: 4px; /* Set the border radius for rounded corners */
+    padding: 17px 25px; /* Set the padding for the button */
+    font-size: 14px; /* Set the font size */
+    text-align: center;
+    border: none; /* Remove the default button border */
+    margin-left: 5px;
+    margin-right: 5px;
+    cursor: pointer; /* Set the cursor to indicate it's clickable */
+    line-height: 3px;
+  }
+  
+  .delete-button:hover {
+    background-color: #686868;
+    color: white;
+    border: #000000;
+  }
+  

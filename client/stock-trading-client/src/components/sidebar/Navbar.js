@@ -5,7 +5,7 @@ import * as IoIcons from 'react-icons/io';
 import { Link, useLocation } from 'react-router-dom';
 import { SidebarData } from './SidebarData';
 import { IconContext } from 'react-icons';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../redux/user/userActions';
 import './Navbar.css';
 
@@ -13,6 +13,7 @@ function Navbar() {
   const [sidebar, setSidebar] = useState(false);
   const location = useLocation();
   const dispatch = useDispatch();
+  const userId = useSelector((state) => state.user.userId);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -22,6 +23,7 @@ function Navbar() {
 
   const renderSidebarData = () => {
     if (location.pathname === '/login') {
+      // login page
       return [
         {
           title: 'Sign in',
@@ -36,7 +38,31 @@ function Navbar() {
           cName: 'nav-text'
         }
       ];
+    } else if (userId < 0) {
+      // Admin user
+      return [
+        {
+          title: 'User Management',
+          path: '/user_management',
+          icon: <FaIcons.FaUsers />,
+          cName: 'nav-text'
+        },
+        {
+          title: 'Stock Management',
+          path: '/stock_management',
+          icon: <AiIcons.AiOutlineStock />,
+          cName: 'nav-text'
+        },
+        {
+          title: 'Log Out',
+          path: '/login',
+          icon: <IoIcons.IoMdLogOut />,
+          cName: 'nav-text',
+          onClick: handleLogout
+        },
+      ]; 
     } else {
+      // Non-admin user
       return [
         ...SidebarData,
         {
