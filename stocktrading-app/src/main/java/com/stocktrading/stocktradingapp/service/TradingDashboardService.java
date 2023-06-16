@@ -10,6 +10,8 @@ import com.stocktrading.stocktradingapp.model.Trade;
 import com.stocktrading.stocktradingapp.model.TradingDashboard;
 import com.stocktrading.stocktradingapp.model.Transaction;
 import com.stocktrading.stocktradingapp.model.User;
+import com.stocktrading.stocktradingapp.service.databaseOperations.StockTableOperationService;
+import com.stocktrading.stocktradingapp.service.databaseOperations.TransactionsTableOperationService;
 
 @Service
 public class TradingDashboardService {

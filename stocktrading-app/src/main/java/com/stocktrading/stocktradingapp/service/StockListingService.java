@@ -17,6 +17,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 
 import com.stocktrading.stocktradingapp.model.Stock;
+import com.stocktrading.stocktradingapp.service.databaseOperations.StockTableOperationService;
 
 @Service
 public class StockListingService implements InitializingBean {

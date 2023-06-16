@@ -1,4 +1,4 @@
-package com.stocktrading.stocktradingapp.service;
+package com.stocktrading.stocktradingapp.service.databaseOperations;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -21,7 +21,8 @@ public class TransactionsTableOperationService {
         connection = DriverManager.getConnection(databaseUrl);
     }
 
-    public void insertTransaction(int userId, String stockSymbol, String transactionType, int quantity, double price) throws SQLException {
+    // inserts a transaction into the database
+    public void insertTransaction(int userId, String stockSymbol, double price,int quantity, String transactionType) throws SQLException {
         String insertTransactionQuery = "INSERT INTO Transactions (user_id, stock_symbol, transaction_type, quantity, price, timestamp) VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP)";
 
         try (PreparedStatement statement = connection.prepareStatement(insertTransactionQuery)) {
@@ -35,6 +36,7 @@ public class TransactionsTableOperationService {
         }
     }
 
+    // updates a transaction in the database
     public void updateTransaction(int transactionId, int quantity, double price) throws SQLException {
         String updateTransactionQuery = "UPDATE Transactions SET quantity = ?, price = ? WHERE transaction_id = ?";
 
@@ -47,6 +49,7 @@ public class TransactionsTableOperationService {
         }
     }
 
+    // deletes a transaction from the database
     public void deleteTransaction(int transactionId) throws SQLException {
         String deleteTransactionQuery = "DELETE FROM Transactions WHERE transaction_id = ?";
 
@@ -57,6 +60,7 @@ public class TransactionsTableOperationService {
         }
     }
 
+    // returns a list of transactions for a given user
     public List<Transaction> getTransactionsByUser(int userId) throws SQLException {
         String getTransactionsQuery = "SELECT * FROM Transactions WHERE user_id = ?";
 
@@ -83,6 +87,7 @@ public class TransactionsTableOperationService {
         return transactions;
     }
 
+    // returns a list of transactions for a given stock
     public List<Transaction> getTransactionsByStock(String stockSymbol) throws SQLException {
         String getTransactionsQuery = "SELECT * FROM Transactions WHERE stock_symbol = ?";
 
@@ -109,6 +114,7 @@ public class TransactionsTableOperationService {
         return transactions;
     }
 
+    // returns a list of transactions for a given date range
     public List<Transaction> getTransactionsByDateRange(String startDate, String endDate) throws SQLException {
         String getTransactionsQuery = "SELECT * FROM Transactions WHERE timestamp BETWEEN ? AND ?";
 

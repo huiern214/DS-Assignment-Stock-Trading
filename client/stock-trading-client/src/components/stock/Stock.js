@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import axios from 'axios';
 import Popup from 'reactjs-popup';
 import './Stock.css';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const Stock = () => {
   const params = useParams();
   const key = params.stockId;
   const url = `https://www.malaysiastock.biz/Corporate-Infomation.aspx?securityCode=${key.slice(0, -3)}`;
+  const userId = useSelector((state) => state.user.userId);
 
   const [lastUpdateTime, setLastUpdateTime] = useState('');
   const [toggleState, setToggleState] = useState(1);
@@ -76,18 +81,57 @@ const Stock = () => {
     }
   };
 
-  const handleTradeStock = () => {
+  // const handleTradeStock = () => {
+  //   if (!tradeAmount || !numberOfShares) {
+  //     console.log('Please enter a value for both fields.');
+  //     return;
+  //   }
+  //     // Perform the buy action with the bid amount and number of shares
+  //     console.log('Trade stock:', tradeAmount, numberOfShares);
+  //     // You can add your buy logic here
+
+  //     // Reset the input fields
+  //     setTradeAmount('');
+  //     setNumberOfShares('');
+  // };
+  const handleTradeStock = async (action) => {
     if (!tradeAmount || !numberOfShares) {
       console.log('Please enter a value for both fields.');
       return;
     }
-      // Perform the buy action with the bid amount and number of shares
-      console.log('Trade stock:', tradeAmount, numberOfShares);
-      // You can add your buy logic here
-
+  
+    try {
+      if (action === 'buy') {
+        await axios.post('http://localhost:8080/api/buysell/buy', {
+          stockSymbol: key,
+          desiredPrice: tradeAmount,
+          desiredQuantity: numberOfShares,
+          buyerId: userId, // Replace with the actual buyer ID
+        });
+        console.log('Stock bought successfully.');
+        toast.success('Stock bought successfully.');
+      } else if (action === 'sell') {
+        await axios.post('http://localhost:8080/api/buysell/sell', {
+          stockSymbol: key,
+          desiredPrice: tradeAmount,
+          desiredQuantity: numberOfShares,
+          sellerId: userId, // Replace with the actual seller ID
+        });
+        console.log('Stock sold successfully.');
+        toast.success('Stock sold successfully.');
+      }
+  
       // Reset the input fields
       setTradeAmount('');
       setNumberOfShares('');
+    } catch (error) {
+      console.error('Error trading stock:', error);
+      if (error.response && error.response.data) {
+        toast.error(`${error.response.data}`);
+      } else {
+        toast.error('Failed to trade the stock.');
+      }
+    }
   };
 
   const getChangeClass = (value) => {
@@ -96,6 +140,7 @@ const Stock = () => {
 
   return (
     <div className="stock-info-container">
+      <ToastContainer />
       {stockData ? (
         <div>
           <div className="stock-header">
@@ -135,7 +180,7 @@ const Stock = () => {
                         />
                       </div>
                       <div className="modal-buttons">
-                        <button onClick={() => { handleTradeStock(); close(); }} disabled={!tradeAmount || !numberOfShares}>Buy</button>
+                        <button onClick={() => { handleTradeStock('buy'); close(); }} disabled={!tradeAmount || !numberOfShares}>Buy</button>
                         <button onClick={close}>Cancel</button>
                       </div>
                     </div>
@@ -166,7 +211,7 @@ const Stock = () => {
                         />
                       </div>
                       <div className="modal-buttons">
-                        <button onClick={() => { handleTradeStock(); close(); }} disabled={!tradeAmount || !numberOfShares}>Sell</button>
+                        <button onClick={() => { handleTradeStock('sell'); close(); }} disabled={!tradeAmount || !numberOfShares}>Sell</button>
                         <button onClick={close}>Cancel</button>
                       </div>
                     </div>

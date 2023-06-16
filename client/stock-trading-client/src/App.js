@@ -11,6 +11,7 @@ import Dashboard from './components/dashboard/Dashboard';
 import UserManagement from './components/admin/UserManagement';
 import StockManagement from './components/admin/StockManagement';
 import News from './components/news/News';
+import Orders from './components/orders/Orders';
 
 function App() {
 
@@ -35,6 +36,7 @@ function App() {
             <Route path="/stocks/:stockId" element={<Stock />}></Route>
             <Route path="/news" element={<News />}></Route>
             <Route path="/dashboard" element={<Dashboard />}></Route>
+            <Route path="/order" element={<Orders />}></Route>
             <Route path="/profile" element={<Profile />}></Route>
             {renderRestrictedRoute(<UserManagement />, '/user_management')}
             {renderRestrictedRoute(<StockManagement />, '/stock_management')}
