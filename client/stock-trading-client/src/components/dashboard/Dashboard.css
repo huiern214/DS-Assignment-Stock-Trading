@@ -5,6 +5,25 @@
     background-color: #f4f4f4;
     border-radius: 5px;
   }
+
+  .print-button {
+    height: 29px;
+    background-color: #3a8ae6;
+    float: right;
+    color: white;
+    border-radius: 4px; /* Set the border radius for rounded corners */
+    padding: 8px 15px; /* Set the padding for the button */
+    font-size: 14px; /* Set the font size */
+    border: none; /* Remove the default button border */
+    cursor: pointer; /* Set the cursor to indicate it's clickable */
+  }
+  
+  .print-button:hover {
+    /* background-color: #686868; */
+    background-color: #1a83ff;
+    color: white;
+    border: #000000;
+  }
   
   h1 {
     text-align: center;
