@@ -40,6 +40,9 @@ const Dashboard = () => {
   };
 
   const PrintableContent = () => {
+    if (!dashboardData) {
+      return <p>Loading dashboard data...</p>;
+    }
     return (
       <div>
         <h1>Trading Dashboard</h1>
@@ -49,8 +52,8 @@ const Dashboard = () => {
           <div className="dashboard-stats">
             <div>
               <h2>Total Realized P/L</h2>
-              <p className="stats-text" style={{ color: getPnLColor(dashboardData.totalPnL) }}>
-                MYR {dashboardData.totalPnL.toFixed(2)}{' '}
+              <p className="stats-text" style={{ color: getPnLColor(dashboardData.totalPnL || 0) }}>
+                MYR {dashboardData.totalPnL ? dashboardData.totalPnL.toFixed(2) : '0.00'}
               </p>
               {!isNaN(dashboardData.totalPnLPercentage) && (
                 <span className="small-text">({dashboardData.totalPnLPercentage.toFixed(2)}%)</span>
@@ -58,26 +61,32 @@ const Dashboard = () => {
             </div>
             <div>
               <h2>Total Unrealized P/L</h2>
-              <p className="stats-text" style={{ color: getPnLColor(dashboardData.unrealisedPnL) }}>
-                MYR {dashboardData.unrealisedPnL.toFixed(2)}
+              <p className="stats-text" style={{ color: getPnLColor(dashboardData.unrealisedPnL || 0) }}>
+                MYR {dashboardData.unrealisedPnL ? dashboardData.unrealisedPnL.toFixed(2) : '0.00'}
               </p>
-              <span className="small-text">{dashboardData.unrealisedPnLPercentage.toFixed(2)}%</span>
+              <span className="small-text">
+                {typeof dashboardData.unrealisedPnLPercentage === 'number'
+                  ? dashboardData.unrealisedPnLPercentage.toFixed(2)
+                  : '0.00'}
+                %
+              </span>
             </div>
             <div>
               <h2>Total Points</h2>
-              <p className="points">{dashboardData.totalPoints.toFixed(2)} pts</p>
+              <p className="points">{dashboardData.totalPoints.toFixed(2) || '0.00'} pts</p>
               <p className="small-text">Rank: null</p>
             </div>
             <div>
               <h2>Total Market Value</h2>
-              <p className="stats-text">MYR {portfolioValue.toFixed(2)}</p>
+              <p className="stats-text">MYR {portfolioValue.toFixed(2) || '0.00'}</p>
             </div>
           </div>
         </div>
-
+        
         {/* Open Positions */}
         <div className="dashboard-section">
-          <h2>Open Positions</h2>
+        <h2>Open Positions</h2>
+        {dashboardData.openPositions.length > 0 ? (
           <table>
             <thead>
               <tr>
@@ -105,12 +114,16 @@ const Dashboard = () => {
                 </tr>
               ))}
             </tbody>
-          </table>
+            </table>
+          ) : (
+            <p>No open positions available.</p>
+          )}
         </div>
 
         {/* Trade History */}
         <div className="dashboard-section">
-          <h2>Trade History</h2>
+        <h2>Trade History</h2>
+        {dashboardData.tradeHistory.length > 0 ? (
           <table>
             <thead>
               <tr>
@@ -141,6 +154,9 @@ const Dashboard = () => {
               ))}
             </tbody>
           </table>
+        ) : (
+          <p>No trade history available.</p>
+        )}
         </div>
       </div>
     );
@@ -148,7 +164,7 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard-container">
-      {dashboardData && portfolioValue ? (
+      {/* {dashboardData && portfolioValue ? ( */}
         <>
           {/* <h1>Trading Dashboard</h1> */}
           <button className="print-button" onClick={handlePrint}>Generate Report</button>
@@ -156,9 +172,9 @@ const Dashboard = () => {
             <PrintableContent />
           </div>
         </>
-      ) : (
+      {/* ) : (
         <p>Loading dashboard data...</p>
-      )}
+      )} */}
     </div>
   );
 };

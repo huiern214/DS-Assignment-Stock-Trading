@@ -56,7 +56,7 @@ public class Stock implements Comparable<Stock>{
 
     @Override
     public String toString() {
-        return name;
+        return "["+symbol + "] " + name;
     }
 
     @Override

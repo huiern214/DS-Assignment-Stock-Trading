@@ -24,7 +24,14 @@ public class Portfolio {
     }
 
     public Map<Stock, Integer> getHoldings() {
-        return holdings;
+        Map<Stock, Integer> holdingsWithZero = new HashMap<>();
+        for (Map.Entry<Stock, Integer> entry : holdings.entrySet()) {
+            Stock stock = entry.getKey();
+            Integer qty = entry.getValue();
+            int adjustedQty = qty != null ? qty : 0;
+            holdingsWithZero.put(stock, adjustedQty);
+        }
+        return holdingsWithZero;
     }
 
     public double getValue() {
@@ -35,6 +42,9 @@ public class Portfolio {
             value += stock.getPrice() * qty * 100;
         }
         return value;
+    }
+
+    public void setHoldings(Map<Stock, Integer> holdings2) {
     }
 }
 

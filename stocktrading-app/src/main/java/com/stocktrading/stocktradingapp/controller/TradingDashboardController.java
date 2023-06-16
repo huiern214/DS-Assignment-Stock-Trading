@@ -46,6 +46,8 @@ public class TradingDashboardController {
     public ResponseEntity<Portfolio> getPortfolioByUserId(@PathVariable int userId) {
         try {
             Portfolio portfolioValue = tradingDashboardService.getPortfolio(userId);
+             // Remove entries with null keys from the portfolio's holdings map
+            portfolioValue.getHoldings().entrySet().removeIf(entry -> entry.getKey() == null);
             return ResponseEntity.ok(portfolioValue);
         } catch (SQLException e) {
             e.printStackTrace();
