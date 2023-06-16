@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.stocktrading.stocktradingapp.model.MarketDepth;
 import com.stocktrading.stocktradingapp.model.Stock;
 import com.stocktrading.stocktradingapp.model.DTO.SearchRequest;
+import com.stocktrading.stocktradingapp.service.MarketDepthService;
 import com.stocktrading.stocktradingapp.service.stocks.StockListingService;
 
 @RestController
@@ -29,6 +30,9 @@ public class StockListingController {
 
     @Autowired
     private StockListingService stockListingService;
+
+    @Autowired
+    private MarketDepthService marketDepthService;
 
     // http://localhost:8080/stocks
     @GetMapping
@@ -99,22 +103,16 @@ public class StockListingController {
 
     // http://localhost:8080/stocks/bid-data/{symbol}
     @GetMapping("/bid-data/{symbol}")
-    public List<MarketDepth> getBidData(@PathVariable String symbol) {
-        List<MarketDepth> bidData = new ArrayList<>();
-        bidData.add(new MarketDepth("a", 10, 500, 5));
-        bidData.add(new MarketDepth("b", 20, 300, 4));
-        bidData.add(new MarketDepth("c", 30, 100, 2));
-        return bidData;
+    public List<MarketDepth> getBidData(@PathVariable String symbol) throws SQLException {
+        return marketDepthService.getBidMarketDepthBySymbol(symbol);
     }
+    // Example output:
+    // [{"symbol":"7277.KL","price":2.17,"qty":5,"noOfAcc":1},{"symbol":"7277.KL","price":2.0,"qty":1,"noOfAcc":1}]
 
     // http://localhost:8080/stocks/ask-data/{symbol}
     @GetMapping("/ask-data/{symbol}")
-    public List<MarketDepth> getAskData(@PathVariable String symbol) {
-        List<MarketDepth> askData = new ArrayList<>();
-        askData.add(new MarketDepth("a", 40, 100, 1));
-        askData.add(new MarketDepth("b", 50, 300, 3));
-        askData.add(new MarketDepth("c", 60, 500, 5));
-        return askData;
+    public List<MarketDepth> getAskData(@PathVariable String symbol) throws SQLException {
+        return marketDepthService.getAskMarketDepthBySymbol(symbol);
     }
 
 }

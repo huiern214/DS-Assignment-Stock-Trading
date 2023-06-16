@@ -86,6 +86,7 @@ const Stock = () => {
     // Check if it is within market hours
     if (!isWithinMarketHours()) {
       console.log('Trading is only allowed during market hours.');
+      const currentTime = new Date().toLocaleTimeString();
       toast.error('Trading is only allowed during market hours.');
       return;
     }
@@ -112,6 +113,7 @@ const Stock = () => {
         });
         console.log('Stock bought successfully.');
         toast.success('Stock bought successfully.');
+        window.location.reload();
       } else if (action === 'sell') {
         await api.post('/api/buysell/sell', {
           stockSymbol: key,
@@ -121,6 +123,7 @@ const Stock = () => {
         });
         console.log('Stock sold successfully.');
         toast.success('Stock sold successfully.');
+        window.location.reload();
       }
   
       // Reset the input fields
@@ -301,16 +304,20 @@ const Stock = () => {
                       </tr>
                     </thead>
                     <tbody className="table-body">
-                      {bidData.map((bid, index) => (
-                        <tr key={index}>
-                          <td>{bid.noOfAcc}</td>
-                          <td>{bid.qty}</td>
-                          <td>{bid.price}</td>
-                          <td>{askData[index].price}</td>
-                          <td>{askData[index].qty}</td>
-                          <td>{askData[index].noOfAcc}</td>
-                        </tr>
-                      ))}
+                      {bidData.map((bid, index) => {
+                        const ask = askData[index] || {}; // Set a default empty object if askData[index] is undefined
+
+                        return (
+                          <tr key={index}>
+                            <td>{bid.noOfAcc}</td>
+                            <td>{bid.qty}</td>
+                            <td>{bid.price}</td>
+                            <td>{ask.price || '-'}</td> {/* Display a dash if ask.price is undefined or empty */}
+                            <td>{ask.qty || '-'}</td> {/* Display a dash if ask.qty is undefined or empty */}
+                            <td>{ask.noOfAcc || '-'}</td> {/* Display a dash if ask.noOfAcc is undefined or empty */}
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>
