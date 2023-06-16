@@ -20,6 +20,7 @@ public class LeaderboardService {
         this.userService = userService;
     }
 
+    // Get the top 10 leaderboard entries
     public List<Leaderboard> getTop10Leaderboard() throws SQLException {
         List<User> users = userService.getAllUsers();
     
@@ -41,5 +42,19 @@ public class LeaderboardService {
         }
     
         return top10Leaderboard;
+    }
+    
+    // Get the current rank of a user
+    public int getCurrentRank(int userId) throws SQLException {
+        List<Leaderboard> leaderboard = getTop10Leaderboard();
+        
+        for (int i = 0; i < leaderboard.size(); i++) {
+            Leaderboard entry = leaderboard.get(i);
+            if (entry.getUserId() == userId) {
+                return i + 1; // Add 1 to get the actual rank (1-indexed)
+            }
+        }
+        
+        return -1; // User not found in the leaderboard
     }    
 }

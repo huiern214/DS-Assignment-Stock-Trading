@@ -12,7 +12,7 @@ import UserManagement from './components/admin/UserManagement';
 import StockManagement from './components/admin/StockManagement';
 import News from './components/news/News';
 import Orders from './components/orders/Orders';
-import Leaderboard from './components/leaderboard/Leaderbaord';
+import Leaderboard from './components/leaderboard/Leaderboard';
 
 function App() {
 

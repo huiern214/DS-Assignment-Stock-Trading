@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import axios from 'axios';
 import './Leaderboard.css';
 import leaderboard from './leaderboard.png';
 
 const Leaderboard = () => {
   const [leaderboardData, setLeaderboardData] = useState([]);
+  const [userRank, setUserRank] = useState(null);
+  const userId = useSelector((state) => state.user.userId);
 
   useEffect(() => {
     fetchLeaderboardData();
@@ -13,7 +16,9 @@ const Leaderboard = () => {
   const fetchLeaderboardData = async () => {
     try {
       const response = await axios.get('http://localhost:8080/api/leaderboard/top10');
+      const response2 = await axios.get(`http://localhost:8080/api/leaderboard/${userId}/rank`);
       setLeaderboardData(response.data);
+      setUserRank(response2.data);
     } catch (error) {
       console.error('Error fetching leaderboard data:', error);
     }
@@ -24,6 +29,7 @@ const Leaderboard = () => {
       <div className="leaderboard-sidepage">
         <h1 className="leaderboard-title">Leaderboard</h1>
         <img src={leaderboard} alt="Leaderboard" className="leaderboard-image" />
+        <div><strong>Your current rank: {userRank}</strong></div>
       </div>
       <table className="leaderboard-table">
         <thead>
@@ -34,6 +40,7 @@ const Leaderboard = () => {
           </tr>
         </thead>
         <tbody>
+          {/* Leaderboard Data */}
           {leaderboardData.map((entry, index) => (
             <tr key={entry.userId} className={index < 3 ? `highlight ${index === 0 ? 'first-place' : index === 1 ? 'second-place' : 'third-place'}` : ''}>
               <td>{index + 1}</td>

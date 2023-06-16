@@ -8,6 +8,8 @@ const Dashboard = () => {
   const userId = useSelector((state) => state.user.userId);
   const [dashboardData, setDashboardData] = useState(null);
   const [portfolioValue, setPortfolioValue] = useState(null);
+  const [profileData, setProfileData] = useState(null);
+  const [userRank, setUserRank] = useState(null);
   const componentRef = useRef();
 
   const handlePrint = useReactToPrint({
@@ -19,6 +21,13 @@ const Dashboard = () => {
       try {
         const dashboardResponse = await axios.get(`http://localhost:8080/dashboard/${userId}`);
         const portfolioResponse = await axios.get(`http://localhost:8080/dashboard/${userId}/portfolio`);
+        const response = await axios.get(`http://localhost:8080/api/users/${userId}`);
+        const response2 = await axios.get(`http://localhost:8080/api/leaderboard/${userId}/rank`);
+        if (response.status === 200) {
+          const profileData = response.data;
+          setProfileData(profileData);
+        }
+        setUserRank(response2.data);
         setDashboardData(dashboardResponse.data);
         setPortfolioValue(portfolioResponse.data.value);
       } catch (error) {
@@ -49,6 +58,8 @@ const Dashboard = () => {
         {/* Include the rest of the content */}
         {/* Total PnL and Points */}
         <div className="dashboard-section">
+          <div className="user-info"><strong>Username: </strong>{profileData.username}</div>
+          <div className="user-info"><strong>Funds: </strong>MYR {profileData.funds}</div>
           <div className="dashboard-stats">
             <div>
               <h2>Total Realized P/L</h2>
@@ -74,7 +85,7 @@ const Dashboard = () => {
             <div>
               <h2>Total Points</h2>
               <p className="points">{dashboardData.totalPoints.toFixed(2) || '0.00'} pts</p>
-              <p className="small-text">Rank: null</p>
+              <p className="small-text">Rank: {userRank}</p>
             </div>
             <div>
               <h2>Total Market Value</h2>
@@ -85,7 +96,7 @@ const Dashboard = () => {
         
         {/* Open Positions */}
         <div className="dashboard-section">
-        <h2>Open Positions</h2>
+        <h2 className="dashboard-h2">Open Positions</h2>
         {dashboardData.openPositions.length > 0 ? (
           <table>
             <thead>
@@ -122,7 +133,7 @@ const Dashboard = () => {
 
         {/* Trade History */}
         <div className="dashboard-section">
-        <h2>Trade History</h2>
+        <h2 className="dashboard-h2">Trade History</h2>
         {dashboardData.tradeHistory.length > 0 ? (
           <table>
             <thead>
