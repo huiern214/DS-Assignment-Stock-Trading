@@ -1,7 +1,6 @@
 package com.stocktrading.stocktradingapp.controller;
 
 import com.stocktrading.stocktradingapp.model.News;
-import com.stocktrading.stocktradingapp.service.NewsService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,15 +12,22 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+// import com.stocktrading.stocktradingapp.service.NewsService;
+import com.stocktrading.stocktradingapp.service.news.NewsService;
+
 @RestController
 @RequestMapping("/news")
 @CrossOrigin(origins = "*")
 public class NewsController {
 
+    // private final NewsService newsService;
+    // private final TestNewsService newsService;
     private final NewsService newsService;
 
     @Autowired
+    // public NewsController(TestNewsService newsService) {
     public NewsController(NewsService newsService) {
+    // public NewsController(NewsService newsService) {
         this.newsService = newsService;
     }
 
