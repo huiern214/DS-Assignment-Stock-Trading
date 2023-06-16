@@ -203,7 +203,8 @@ public class UserService {
                         int quantity = resultSet.getInt("quantity");      
                         Stock stock = stockTable.getStock(symbol);
                         Portfolio portfolio = new Portfolio();
-                        portfolio.addStock(stock, quantity);
+                        if (symbol != null)
+                            portfolio.addStock(stock, quantity);
                         user.setPortfolio(portfolio);
                     } while (resultSet.next());
 
