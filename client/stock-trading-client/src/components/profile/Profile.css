@@ -1,45 +1,66 @@
 .profile-container {
-    width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #f2f2f2;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    text-align: left;
-  }
-  
-  .profile-title {
-    font-size: 24px;
-    margin-bottom: 10px;
-    text-decoration: underline;
-  }
-  
-  .profile-item {
-    /* display: flex; */
-    align-items: center;
-    margin-bottom: 10px;
-  }
-  
-  .profile-item label {
-    flex: 0 0 100px;
-    font-weight: bold;
-  }
-  
-  .profile-item span {
-    flex: 1;
-    margin-left: 10px;
-  }
-  
-  .loading-text {
-    text-align: center;
-    font-size: 18px;
-    margin-top: 50px;
-  }
-  
-  .error-text {
-    text-align: center;
-    font-size: 18px;
-    color: red;
-    margin-top: 50px;
-  }
-  
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f4f4f4;
+  border-radius: 5px;
+}
+
+.profile-header {
+  margin-bottom: 10px;
+}
+
+.profile-title {
+  font-size: 24px;
+}
+
+.profile-content {
+  margin-bottom: 30px;
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.profile-item {
+  margin-bottom: 10px;
+  display: flex;
+  margin-left: 10%;
+}
+
+.profile-table {
+  width: 60%;
+  border-collapse: collapse;
+  margin: 0 auto;
+}
+
+.portfolio-table {
+  width: 80%;
+  border-collapse: collapse;
+  margin: 0 auto;
+}
+
+.profile-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.symbol-stock-column {
+  padding-left: 10%;
+  text-align: left;
+}
+
+.profile-table th,
+.profile-table td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.profile-table th {
+  background-color: #f2f2f2;
+}
+
+.profile-table tr:last-child td {
+  border-bottom: none;
+}

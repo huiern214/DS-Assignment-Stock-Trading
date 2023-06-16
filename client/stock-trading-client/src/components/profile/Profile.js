@@ -29,32 +29,58 @@ function Profile() {
 
   return (
     <div className="profile-container">
-      <h2 className="profile-title">User Profile</h2>
-      <div className="profile-item">
-        <label>User ID:</label>
-        <span>{profileData.userId}</span>
+      <div className="profile-header">
+        <h2 className="profile-title">User Profile</h2>
       </div>
-      <div className="profile-item">
-        <label>Username:</label>
-        <span>{profileData.username}</span>
-      </div>
-      <div className="profile-item">
-        <label>Email:</label>
-        <span>{profileData.email}</span>
-      </div>
-      <div className="profile-item">
-        <label>Funds:</label>
-        <span>{profileData.funds}</span>
+      <div className="profile-content">
+        <table className="profile-table">
+          <tbody>
+            <tr>
+              <td><strong>User ID:</strong></td>
+              <td>{profileData.userId}</td>
+            </tr>
+            <tr>
+              <td><strong>Username:</strong></td>
+              <td>{profileData.username}</td>
+            </tr>
+            <tr>
+              <td><strong>Email:</strong></td>
+              <td>{profileData.email}</td>
+            </tr>
+            <tr>
+              <td><strong>Funds:</strong></td>
+              <td>{profileData.funds}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
       
-      <h2 className="profile-title">Portfolio</h2>
-      <div className="profile-item">
-        <label>Holdings:</label>
-        <span>{JSON.stringify(profileData.portfolio.holdings)}</span>
+      <div className="profile-header">
+        <h2 className="profile-title">Portfolio</h2>
       </div>
-      <div className="profile-item">
-        <label>Value:</label>
-        <span>{profileData.portfolio.value}</span>
+      <div className="profile-content">
+        <div className="profile-item">
+          <label>Total Market Value: </label>
+          <span>MYR {profileData.portfolio.value}</span>
+        </div>
+        <div className="portfolio-table">
+          <table>
+            <thead>
+              <tr>
+                <th className="symbol-stock-column">Stock</th>
+                <th>Quantity</th>
+              </tr>
+            </thead>
+            <tbody>
+              {Object.entries(profileData.portfolio.holdings).map(([stock, quantity]) => (
+                <tr key={stock}>
+                  <td className="symbol-stock-column">{stock}</td>
+                  <td>{quantity}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
