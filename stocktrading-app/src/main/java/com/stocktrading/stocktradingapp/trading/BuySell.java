@@ -378,34 +378,6 @@ public class BuySell {
 
     }
 
-    //Second version of sell trade
-    //Used to execute a trade when the desired Quantity is less than the buyer's Order
-    private void executeSellTrade2(String stockSymbol, double tradePrice, int tradeQuantity, int buyerId, double buyerPrice,
-                                  int buyerQuantity, int orderId) throws SQLException {
-        // Calculate the total trade value
-        double totalTradeValue = tradePrice * tradeQuantity;
-
-        // Update buyer's funds
-        double buyerFunds = usersTableOperations.getUserFunds(buyerId);
-        double updatedBuyerFunds = buyerFunds - totalTradeValue;
-        usersTableOperations.updateUserFunds(buyerId, updatedBuyerFunds);
-
-        // Deduct the stock quantity from the buyer's available quantity in the Orders table
-        ordersTableOperations.updateOrderQuantity(orderId, buyerQuantity - tradeQuantity);
-
-        //Checks and remove if that item has 0 quantity in Orders table
-        if (ordersTableOperations.getOrderQuantity(orderId) <= 0){
-            ordersTableOperations.removeOrderByOrderId(orderId);
-        }
-
-        // Add stock to buyer's portfolio
-        portfolioTableOperations.addStockToPortfolio(buyerId, stockSymbol, tradeQuantity, tradePrice);
-
-        // Add transaction for the buyer
-        transactionsTableOperations.insertTransaction(buyerId, stockSymbol, tradePrice, tradeQuantity, "BUY");
-
-    }
-
     //Only used in selling stock to update the buyer's side of the trade when the quantity in the buyer's order is smaller than the seller's first portfolio amount
     private void executePartialSellTrade(String stockSymbol, double tradePrice, int tradeQuantity, int buyerId, double buyerPrice,
                                     int buyerQuantity, int orderId) throws SQLException {
