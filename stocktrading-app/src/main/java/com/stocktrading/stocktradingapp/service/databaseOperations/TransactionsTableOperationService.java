@@ -14,11 +14,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class TransactionsTableOperationService {
 
-    private final String databaseUrl = "jdbc:sqlite:stocktrading-app/database/data.sqlite3";
     private Connection connection;
 
-    public TransactionsTableOperationService() throws SQLException {
-        connection = DriverManager.getConnection(databaseUrl);
+    public TransactionsTableOperationService(Connection connection) {
+        this.connection = connection;
     }
 
     // inserts a transaction into the database

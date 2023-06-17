@@ -2,6 +2,7 @@ package com.stocktrading.stocktradingapp.controller;
 
 import java.sql.SQLException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -20,10 +21,12 @@ public class BuySellController {
 
     private final BuySellService buySellService;
 
+    @Autowired
     public BuySellController(BuySellService buySellService) {
         this.buySellService = buySellService;
     }
 
+    // http://localhost:8080/api/buysell/buy
     @PostMapping("/buy")
     public ResponseEntity<String> buyStock(@RequestBody BuySellRequest buyRequest) {
         try {
@@ -42,6 +45,13 @@ public class BuySellController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+    // Example input:
+    // {
+    //     "stockSymbol": "5255.KL",
+    //     "desiredPrice": 3.75,
+    //     "desiredQuantity": 7,
+    //     "buyerId": 2
+    //   }
 
     @PostMapping("/sell")
     public ResponseEntity<String> sellStock(@RequestBody BuySellRequest sellRequest) {
@@ -61,5 +71,12 @@ public class BuySellController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+    // Example input:
+    // {
+    //     "stockSymbol": "1961.KL",
+    //     "desiredPrice": 3.75,
+    //     "desiredQuantity": 5,
+    //     "sellerId": 1
+    //   }
 }
 

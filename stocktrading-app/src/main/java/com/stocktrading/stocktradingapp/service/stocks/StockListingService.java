@@ -1,4 +1,4 @@
-package com.stocktrading.stocktradingapp.service;
+package com.stocktrading.stocktradingapp.service.stocks;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -28,7 +28,7 @@ public class StockListingService implements InitializingBean {
     //     "1155", "6012", "3816", "5183", "5681", "6033", "4065", "8869", "4197", "5285"};
     private List<String> COMPANY_CODES = new ArrayList<>();
 
-    private final StockService stockService;
+    private final StockAPIService stockService;
     private final StockTableOperationService stockTableOperationService;
 
     private PriorityQueue<Stock> stockQueue;
@@ -38,7 +38,7 @@ public class StockListingService implements InitializingBean {
     private static final long INTERVAL = 5 * 60 * 1000; // 5 minutes in milliseconds
 
     // Constructor
-    public StockListingService(StockService stockService, StockTableOperationService stockTableOperationService) throws SQLException {
+    public StockListingService(StockAPIService stockService, StockTableOperationService stockTableOperationService) throws SQLException {
         this.stockService = stockService;
         this.stockTableOperationService = stockTableOperationService;
         this.stockQueue = new PriorityQueue<>();

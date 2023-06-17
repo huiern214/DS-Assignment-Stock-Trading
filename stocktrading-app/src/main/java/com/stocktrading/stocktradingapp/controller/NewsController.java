@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-// import com.stocktrading.stocktradingapp.service.NewsService;
 import com.stocktrading.stocktradingapp.service.news.NewsService;
 
 @RestController
@@ -20,17 +19,14 @@ import com.stocktrading.stocktradingapp.service.news.NewsService;
 @CrossOrigin(origins = "*")
 public class NewsController {
 
-    // private final NewsService newsService;
-    // private final TestNewsService newsService;
     private final NewsService newsService;
 
     @Autowired
-    // public NewsController(TestNewsService newsService) {
     public NewsController(NewsService newsService) {
-    // public NewsController(NewsService newsService) {
         this.newsService = newsService;
     }
 
+    // http://localhost:8080/news
     @GetMapping
     public ResponseEntity<List<News>> getAllNews() {
         List<News> newsList = newsService.getNewsList();

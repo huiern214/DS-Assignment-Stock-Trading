@@ -17,12 +17,13 @@ import com.stocktrading.stocktradingapp.model.Portfolio;
 
 @Service
 public class UserService {
-    private final String databaseUrl = "jdbc:sqlite:stocktrading-app/database/data.sqlite3";
     private Connection connection;
+    private final StockTableOperationService stockTableOperationService;
     
     // establishes connection to the database
-    public UserService() throws SQLException {
-        connection = DriverManager.getConnection(databaseUrl);
+    public UserService(Connection connection, StockTableOperationService stockTableOperationService) {
+        this.connection = connection;
+        this.stockTableOperationService = stockTableOperationService;
     }
 
     // registers a user to the database
@@ -177,7 +178,6 @@ public class UserService {
                 "LEFT JOIN Portfolio p ON u.user_id = p.user_id " +
                 "WHERE u.user_id = ?";
         try (PreparedStatement statement = connection.prepareStatement(getUserProfileQuery)) {
-            StockTableOperationService stockTable = new StockTableOperationService();
 
             statement.setInt(1, userId);
 
@@ -201,7 +201,7 @@ public class UserService {
                     do {
                         String symbol = resultSet.getString("stock_symbol");
                         int quantity = resultSet.getInt("quantity");      
-                        Stock stock = stockTable.getStock(symbol);
+                        Stock stock = stockTableOperationService.getStock(symbol);
                         Portfolio portfolio = new Portfolio();
                         if (symbol != null)
                             portfolio.addStock(stock, quantity);

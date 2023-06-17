@@ -3,6 +3,7 @@ package com.stocktrading.stocktradingapp.controller;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -20,6 +21,7 @@ import com.stocktrading.stocktradingapp.service.LeaderboardService;
 public class LeaderboardController {
     private final LeaderboardService leaderboardService;
 
+    @Autowired
     public LeaderboardController(LeaderboardService leaderboardService) {
         this.leaderboardService = leaderboardService;
     }
@@ -35,7 +37,7 @@ public class LeaderboardController {
         }
     }
     // Example output:
-    // [{"userId":2,"username":"Lily","totalPoints":0.0},{"userId":1,"username":"Ali","totalPoints":-0.021999999999999888}]
+    // [{"userId":2,"username":"Lily","totalPoints":0.0},{"userId":5,"username":"Sharon","totalPoints":0.0},{"userId":6,"username":"James","totalPoints":0.0},{"userId":1,"username":"Ali","totalPoints":-0.021999999999999888}]
 
     // http://localhost:8080/api/leaderboard/1/rank
     @GetMapping("/{userId}/rank")

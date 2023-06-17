@@ -20,7 +20,7 @@ public class OrdersController {
         this.ordersTableOperationService = ordersTableOperationService;
     }
 
-    // GET /orders/user/{userId}
+    // http://localhost:8080/orders/user/{userId}
     @GetMapping("/user/{userId}")
     public List<Order> getAllOrdersByUserId(@PathVariable int userId) {
         return ordersTableOperationService.getAllOrdersByUserId(userId);
@@ -28,8 +28,8 @@ public class OrdersController {
     // Example output:
     // [{"orderId":29,"userId":2,"stockSymbol":"3034.KL","quantity":5,"price":3.5,"orderType":"BUY"}]
 
-    // DELETE /orders/delete-order
-    @DeleteMapping("/{orderId}")
+    // http://localhost:8080/orders/delete-order
+    @DeleteMapping("/delete-order")
     public void removeOrderByOrderId(@RequestBody Map<String, Integer> orderId) {
         ordersTableOperationService.removeOrderByOrderId(orderId.get("order_id"));
     }

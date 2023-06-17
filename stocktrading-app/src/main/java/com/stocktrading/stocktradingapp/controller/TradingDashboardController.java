@@ -3,6 +3,7 @@ package com.stocktrading.stocktradingapp.controller;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -22,10 +23,12 @@ import com.stocktrading.stocktradingapp.service.TradingDashboardService;
 public class TradingDashboardController {
     private final TradingDashboardService tradingDashboardService;
 
+    @Autowired
     public TradingDashboardController(TradingDashboardService tradingDashboardService) {
         this.tradingDashboardService = tradingDashboardService;
     }
 
+    // http://localhost:8080/dashboard/{userId}
     @GetMapping("/{userId}")
     public ResponseEntity<TradingDashboard> getTradingDashboardByUserId(@PathVariable int userId) {
         try {
@@ -42,6 +45,7 @@ public class TradingDashboardController {
     // "totalPnL":-10.999999999999943,"totalPoints":-0.021999999999999888,
     // "unrealisedPnL":480.0,"unrealisedPnLPercentage":36.92307692307693,"totalPnLPercentage":-2.1568627450980284}
     
+    // http://localhost:8080/dashboard/{userId}/portfolio
     @GetMapping("/{userId}/portfolio")
     public ResponseEntity<Portfolio> getPortfolioByUserId(@PathVariable int userId) {
         try {
@@ -57,6 +61,7 @@ public class TradingDashboardController {
     // Example output:
     // {"holdings":{"AMMB Holdings Berhad (AMBANK)":5},"value":1775.0}
 
+    // http://localhost:8080/dashboard/{userId}/points
     @GetMapping("/{userId}/points")
     public ResponseEntity<Double> getPointsByUserId(@PathVariable int userId) {
         try {
@@ -70,6 +75,7 @@ public class TradingDashboardController {
     // Example output:
     // -0.021999999999999888
 
+    // http://localhost:8080/dashboard/{userId}/open-positions
     @GetMapping("/{userId}/open-positions")
     public ResponseEntity<List<Trade>> getOpenPositionsByUserId(@PathVariable int userId) {
         try {
@@ -83,6 +89,7 @@ public class TradingDashboardController {
     // Example output:
     // [{"symbol":"1015.KL","qtySold":5,"entryPrice":2.6,"exitPrice":3.55,"entryTime":"2023-06-12 07:53:55","exitTime":"","roi":36.53846153846153,"pnL":474.99999999999983}]
 
+    // http://localhost:8080/dashboard/{userId}/trade-history
     @GetMapping("/{userId}/trade-history")
     public ResponseEntity<List<Trade>> getTradeHistoryByUserId(@PathVariable int userId) {
         try {
@@ -96,6 +103,7 @@ public class TradingDashboardController {
     // Example output:
     // [{"symbol":"1023.KL","qtySold":1,"entryPrice":5.1,"exitPrice":4.99,"entryTime":"2023-06-10 18:39:32","exitTime":"2023-06-13 17:37:01","roi":-2.1568627450980284,"pnL":-10.999999999999943}]
 
+    // http://localhost:8080/dashboard/{userId}/trade-history/{symbol}
     @GetMapping("/{userId}/trade-history/{symbol}")
     public ResponseEntity<List<Trade>> getTradeHistoryBySymbol(@PathVariable int userId, @PathVariable String symbol) {
         try {

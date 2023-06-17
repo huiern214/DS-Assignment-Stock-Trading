@@ -14,12 +14,6 @@ import com.stocktrading.stocktradingapp.model.Order;
 @Service
 public class OrdersTableOperationService {
 
-    // private final String databaseUrl = "jdbc:sqlite:stocktrading-app/database/data.sqlite3";
-    // private Connection connection;
-
-    // public OrdersTableOperationService(Connection connection) throws SQLException {
-    //     this.connection = connection = DriverManager.getConnection(databaseUrl);
-    // }
     private Connection connection;
 
     public OrdersTableOperationService(Connection connection) {

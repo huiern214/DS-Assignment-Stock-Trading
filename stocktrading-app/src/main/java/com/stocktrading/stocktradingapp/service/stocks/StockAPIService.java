@@ -1,4 +1,4 @@
-package com.stocktrading.stocktradingapp.service;
+package com.stocktrading.stocktradingapp.service.stocks;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stocktrading.stocktradingapp.model.Stock;
 
 @Service
-public class StockService {
+public class StockAPIService {
 
     @Value("${stock.trading.api.base.url}")
     private String API_BASE_URL;

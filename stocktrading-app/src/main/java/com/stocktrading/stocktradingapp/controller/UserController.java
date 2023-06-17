@@ -23,6 +23,7 @@ public class UserController {
         this.userService = userService;
     }
 
+    // http://localhost:8080/api/users/register
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody UserRegistrationDTO user) {
         boolean success = false;
@@ -40,7 +41,14 @@ public class UserController {
         }
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to register user");
     }
+    // Example input:
+    // {
+    //     "username": "ABC",
+    //     "email": "abc@gmail.com",
+    //     "password": "12345"
+    //   }      
 
+    // http://localhost:8080/api/users/login
     @PostMapping("/login")
     public ResponseEntity<Integer> loginUser(@RequestBody Map<String, String> loginInfo) {
         String email = loginInfo.get("email");
@@ -52,9 +60,14 @@ public class UserController {
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
     }
+    // Example input:
+    // {
+    //     "email": "Ali@gmail.com",
+    //     "password": "1234"
+    // }
 
+    // http://localhost:8080/api/users/{user_id}
     @GetMapping("/{user_id}")
-    // @RequestMapping()
     public ResponseEntity<User> getUserProfile(@PathVariable int user_id) {
         try {
             User userProfile = userService.getUser(user_id);

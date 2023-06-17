@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.stocktrading.stocktradingapp.model.MarketDepth;
 import com.stocktrading.stocktradingapp.model.Stock;
 import com.stocktrading.stocktradingapp.model.DTO.SearchRequest;
-import com.stocktrading.stocktradingapp.service.StockListingService;
+import com.stocktrading.stocktradingapp.service.stocks.StockListingService;
 
 @RestController
 @RequestMapping("/stocks")

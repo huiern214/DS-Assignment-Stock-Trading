@@ -9,12 +9,11 @@ import com.stocktrading.stocktradingapp.model.Stock;
 @Service
 public class StockTableOperationService {
 
-    private final String databaseUrl = "jdbc:sqlite:stocktrading-app/database/data.sqlite3";
     private Connection connection;
     
     // establishes connection to the database
-    public StockTableOperationService() throws SQLException {
-        connection = DriverManager.getConnection(databaseUrl);
+    public StockTableOperationService(Connection connection) {
+        this.connection = connection;
     }
 
     // add stock to the database
