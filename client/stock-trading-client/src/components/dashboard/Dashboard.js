@@ -80,10 +80,9 @@ const Dashboard = () => {
                 MYR {dashboardData.unrealisedPnL ? dashboardData.unrealisedPnL.toFixed(2) : '0.00'}
               </p>
               <span className="small-text">
-                {typeof dashboardData.unrealisedPnLPercentage === 'number'
+                ({typeof dashboardData.unrealisedPnLPercentage === 'number'
                   ? dashboardData.unrealisedPnLPercentage.toFixed(2)
-                  : '0.00'}
-                %
+                  : '0.00'}%)
               </span>
             </div>
             <div>

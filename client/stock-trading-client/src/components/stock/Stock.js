@@ -170,10 +170,12 @@ const Stock = () => {
                           onChange={handleNumberOfSharesChange}
                           step="1"
                           min="1"
+                          max="99999"
                         />
                       </div>
+                      <p>Total: {(tradeAmount * numberOfShares * 100).toFixed(2)}</p>
                       <div className="modal-buttons">
-                        <button onClick={() => { handleTradeStock('buy'); close(); }} disabled={!tradeAmount || !numberOfShares}>Buy</button>
+                        <button onClick={() => { handleTradeStock('buy'); close(); }} disabled={!tradeAmount || !numberOfShares || numberOfShares > 99999}>Buy</button>
                         <button onClick={close}>Cancel</button>
                       </div>
                     </div>
@@ -201,10 +203,13 @@ const Stock = () => {
                           value={numberOfShares}
                           onChange={handleNumberOfSharesChange}
                           step="1"
+                          min="1"
+                          max="99999"
                         />
                       </div>
+                      <p>Total: {(tradeAmount * numberOfShares * 100).toFixed(2)}</p>
                       <div className="modal-buttons">
-                        <button onClick={() => { handleTradeStock('sell'); close(); }} disabled={!tradeAmount || !numberOfShares}>Sell</button>
+                        <button onClick={() => { handleTradeStock('sell'); close(); }} disabled={!tradeAmount || !numberOfShares || numberOfShares > 99999}>Sell</button>
                         <button onClick={close}>Cancel</button>
                       </div>
                     </div>
