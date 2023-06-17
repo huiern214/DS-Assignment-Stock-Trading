@@ -1,5 +1,7 @@
 package com.stocktrading.stocktradingapp.databaseOperations;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PortfolioTableOperations {
 
@@ -130,15 +132,43 @@ public class PortfolioTableOperations {
         return null; // Return null if no matching portfolio item is found
     }
 
-    public PortfolioItem getEarliestMatchingSellPortfolioItem(int userId, String stockSymbol, int quantity,double desiredPrice) {
-        String query = "SELECT * FROM Portfolio WHERE user_id = ? AND quantity <= ? AND stock_symbol = ? AND purchase_price = ? ORDER BY purchase_date ASC LIMIT 1";
+//    public PortfolioItem getEarliestMatchingSellPortfolioItem(int userId, String stockSymbol, int quantity,double desiredPrice) {
+//        String query = "SELECT * FROM Portfolio WHERE user_id = ? AND quantity <= ? AND stock_symbol = ? AND purchase_price = ? ORDER BY purchase_date ASC LIMIT 1";
+//        StockTableOperations stockTableOperations = new StockTableOperations(connection);
+//
+//        try (PreparedStatement statement = connection.prepareStatement(query)) {
+//            statement.setInt(1, userId);
+//            statement.setInt(2, quantity);
+//            statement.setString(3, stockSymbol);
+//            statement.setDouble(4, desiredPrice);
+//
+//            try (ResultSet resultSet = statement.executeQuery()) {
+//                if (resultSet.next()) {
+//                    int portfolioId = resultSet.getInt("id");
+//                    double purchasePrice = resultSet.getDouble("purchase_price");
+//                    int retrievedQuantity = resultSet.getInt("quantity");
+//
+//                    Stock stock = stockTableOperations.getStock(stockSymbol);
+//
+//                    return new PortfolioItem(portfolioId, stock, retrievedQuantity, purchasePrice);
+//                }
+//            }
+//        } catch (SQLException e) {
+//            // Handle any potential exceptions
+//            e.printStackTrace();
+//        }
+//
+//        return null; // Return null if no matching portfolio item is found
+//    }
+
+    public PortfolioItem getEarliestMatchingSellPortfolioItem(int userId, String stockSymbol,double desiredPrice) {
+        String query = "SELECT * FROM Portfolio WHERE user_id = ? AND stock_symbol = ? AND purchase_price = ? ORDER BY purchase_date ASC LIMIT 1";
         StockTableOperations stockTableOperations = new StockTableOperations(connection);
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, userId);
-            statement.setInt(2, quantity);
-            statement.setString(3, stockSymbol);
-            statement.setDouble(4, desiredPrice);
+            statement.setString(2, stockSymbol);
+            statement.setDouble(3, desiredPrice);
 
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
@@ -175,6 +205,31 @@ public class PortfolioTableOperations {
         }
 
         return 0; // Return 0 if no result found
+    }
+
+    public List<PortfolioItem> getUserPortfolio(int userId) throws SQLException {
+        List<PortfolioItem> portfolio = new ArrayList<>();
+        StockTableOperations stockTableOperations = new StockTableOperations(connection);
+
+        String query = "SELECT * FROM portfolio WHERE user_id = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, userId);
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                int portfolioId = resultSet.getInt("id");
+                String stockSymbol = resultSet.getString("stock_symbol");
+                int quantity = resultSet.getInt("quantity");
+                double purchasePrice = resultSet.getDouble("purchase_price");
+
+                Stock stock = stockTableOperations.getStock(stockSymbol);
+
+                PortfolioItem portfolioItem = new PortfolioItem(portfolioId, stock , quantity, purchasePrice);
+                portfolio.add(portfolioItem);
+            }
+        }
+
+        return portfolio;
     }
     // Other methods for portfolio-related operations...
 }

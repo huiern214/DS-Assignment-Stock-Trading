@@ -51,13 +51,6 @@ public class BuySell {
             totalQuantityInMatchingOrders = totalQuantityInMatchingOrders + matchingOrder.getQuantity();
         }
 
-        //Check if the amount of stock in the system and order is sufficient for the buyer's desired amount
-        //If there are not enough amount in the system plus portfolio of sellers, then it will be listed as an Order.
-        if (!(tempSystemStockQuantity + totalQuantityInMatchingOrders >= desiredQuantity)){
-            ordersTableOperations.insertOrder(buyerId, stockSymbol, "BUY", desiredQuantity, desiredPrice);
-            return;
-        }
-
         if ((matchingOrders != null) && (matchingOrders.size() != 0)) {
             for (Order matchingOrder : matchingOrders) {
                 //When there are no more stock to buy, it will break out of the loop
@@ -115,7 +108,12 @@ public class BuySell {
                 return;
             }
 
+            //If the price doesn't match, then it will not be able to buy from system stock
             double systemStockPrice = stock.getCurrentPrice();
+            if (desiredPrice != systemStockPrice) {
+                ordersTableOperations.insertOrder(buyerId, stockSymbol, "BUY", desiredQuantity, desiredPrice);
+                return;
+            }
 
             // Update buyer's funds
             usersTableOperations.updateUserFunds(buyerId, (usersTableOperations.getUserFunds(buyerId)) - totalPrice);
@@ -132,9 +130,20 @@ public class BuySell {
         }
 
         //If there are Matching Orders, but after buying from Orders, there are still leftovers, then it will buy from system stock
-        if (leftoverStockQuantity > 0) {
+        if (leftoverStockQuantity > 0 && desiredQuantity > leftoverStockQuantity) {
             // Step 4.5: Buy stock from the system stock
             int systemStockQuantity = stockTableOperations.getStockQuantity(stockSymbol);
+            if (systemStockQuantity < leftoverStockQuantity){
+                ordersTableOperations.insertOrder(buyerId, stockSymbol, "BUY", leftoverStockQuantity, desiredPrice);
+                return;
+            }
+
+            //If the price doesn't match, then it will not be able to buy from system stock
+            double systemStockPrice = stock.getCurrentPrice();
+            if (desiredPrice != systemStockPrice) {
+                ordersTableOperations.insertOrder(buyerId, stockSymbol, "BUY", leftoverStockQuantity, desiredPrice);
+                return;
+            }
 
             // Update buyer's funds
             usersTableOperations.updateUserFunds(buyerId, (usersTableOperations.getUserFunds(buyerId)) - (desiredPrice * leftoverStockQuantity));
@@ -257,23 +266,23 @@ public class BuySell {
                 //If buyer's Order isn't 0, then it will keep looping until either the seller sold enough, or the buyer's Order is 0, then only move to the next Order.
                 while (buyerQuantity != 0) {
                     //get the earliest portfolio quantity in the seller's portfolio
-                    PortfolioItem firstPortfolio = portfolioTableOperations.getEarliestMatchingSellPortfolioItem(sellerId, stockSymbol, desiredQuantity, desiredPrice);
+                    PortfolioItem firstPortfolio = portfolioTableOperations.getEarliestMatchingSellPortfolioItem(sellerId, stockSymbol, desiredPrice);
                     int firstPortfolioQuantity = firstPortfolio.getQuantity();
 
-                    if (buyerQuantity >= firstPortfolioQuantity) {
-                        // Step 5.1: Execute the full trade
-                        //This method will affect the buyer's side
-                        executeSellTrade(stockSymbol, desiredPrice, firstPortfolioQuantity, buyerId, buyerPrice,
-                                buyerQuantity, orderId);
+                    //If the desiredQuantity is less than buyer's Order
+                    if (buyerQuantity >= leftoverStockQuantity){
+                        int tradeQuantity = (firstPortfolioQuantity < leftoverStockQuantity) ? firstPortfolioQuantity : leftoverStockQuantity;
+                        //Affect the buyer's side of the trade
+                        executeSellTrade(stockSymbol,desiredPrice,tradeQuantity,buyerId,buyerPrice,buyerQuantity,orderId);
 
-                        //These methods will affect the seller's side
-                        // Update seller's funds
-                        usersTableOperations.updateUserFunds(sellerId, (usersTableOperations.getUserFunds(sellerId)) + (firstPortfolioQuantity * desiredPrice));
+                        //Affect the seller's side of the trade
+                        //Update seller's funds
+                        usersTableOperations.updateUserFunds(sellerId,(usersTableOperations.getUserFunds(sellerId)) + (tradeQuantity * desiredPrice));
 
-                        // Deduct the stock quantity from the seller's portfolio in the Portfolio table
-                        PortfolioItem portfolioitem = portfolioTableOperations.getEarliestMatchingSellPortfolioItem(sellerId, stockSymbol, desiredQuantity, desiredPrice);
+                        //Update seller's portfolio
+                        PortfolioItem portfolioitem = portfolioTableOperations.getEarliestMatchingSellPortfolioItem(sellerId, stockSymbol, desiredPrice);
                         int portfolioId = portfolioitem.getPortfolioId();
-                        portfolioTableOperations.updateStockQuantity(portfolioId, stockSymbol, 0);
+                        portfolioTableOperations.updateStockQuantity(portfolioId, stockSymbol, firstPortfolioQuantity - tradeQuantity);
 
                         //Checks and remove the items in the portfolio that have 0 quantity
                         if (portfolioTableOperations.getPortfolioQuantity(portfolioId) <= 0) {
@@ -281,27 +290,40 @@ public class BuySell {
                         }
 
                         // Add transaction for the seller
-                        transactionsTableOperations.insertTransaction(sellerId, stockSymbol, desiredPrice, firstPortfolioQuantity, "SELL");
+                        transactionsTableOperations.insertTransaction(sellerId, stockSymbol, desiredPrice, tradeQuantity, "SELL");
 
                         //If the desired quantity still have leftover, then the leftoverStockQuantity will keep decreasing until 0 for each trade
-                        leftoverStockQuantity = buyerQuantity - firstPortfolioQuantity;
+                        if (tradeQuantity < buyerQuantity){
+                            leftoverStockQuantity = leftoverStockQuantity - tradeQuantity;
+                        } else {
+                            leftoverStockQuantity = leftoverStockQuantity - buyerQuantity;
+                        }
+
+                        if (leftoverStockQuantity == 0){
+                            break;
+                        }
 
                         //Since buyerQuantity will be bigger or equal than the quantity in the portfolio, so there are still some quantity left to be bought in the Order
-                        buyerQuantity = buyerQuantity - firstPortfolioQuantity;
+                        buyerQuantity = buyerQuantity - tradeQuantity;
 
                     } else {
+                        //This should happen when the buyer's Order is less than or equal the firstPortfolioQuantity
+                        // as well as the desired Quantity to sell is higher than or equal to the buyer's Order
                         // Step 5.2: Execute a partial trade
-                        executePartialSellTrade(stockSymbol, desiredPrice, firstPortfolioQuantity, buyerId, buyerPrice,
+                        int tradeQuantity = (firstPortfolioQuantity >= leftoverStockQuantity) ? buyerQuantity : firstPortfolioQuantity;
+                        int orderQuantity = (buyerQuantity - tradeQuantity);
+
+                        executePartialSellTrade(stockSymbol, desiredPrice, tradeQuantity, buyerId, buyerPrice,
                                 buyerQuantity, orderId);
 
                         //These methods will affect the seller's side
                         // Update seller's funds
-                        usersTableOperations.updateUserFunds(sellerId, (usersTableOperations.getUserFunds(sellerId)) + (buyerQuantity * desiredPrice));
+                        usersTableOperations.updateUserFunds(sellerId, (usersTableOperations.getUserFunds(sellerId)) + (tradeQuantity * desiredPrice));
 
                         // Deduct the stock quantity from the seller's portfolio in the Portfolio table
-                        PortfolioItem portfolioitem = portfolioTableOperations.getEarliestMatchingSellPortfolioItem(sellerId, stockSymbol, desiredQuantity, desiredPrice);
+                        PortfolioItem portfolioitem = portfolioTableOperations.getEarliestMatchingSellPortfolioItem(sellerId, stockSymbol, desiredPrice);
                         int portfolioId = portfolioitem.getPortfolioId();
-                        portfolioTableOperations.updateStockQuantity(portfolioId, stockSymbol, (firstPortfolioQuantity - buyerQuantity));
+                        portfolioTableOperations.updateStockQuantity(portfolioId, stockSymbol, (firstPortfolioQuantity - tradeQuantity));
 
                         //Checks and remove the items in the portfolio that have 0 quantity
                         if (portfolioTableOperations.getPortfolioQuantity(portfolioId) <= 0) {
@@ -309,12 +331,11 @@ public class BuySell {
                         }
 
                         // Add transaction for the seller
-                        transactionsTableOperations.insertTransaction(sellerId, stockSymbol, desiredPrice, buyerQuantity, "SELL");
+                        transactionsTableOperations.insertTransaction(sellerId, stockSymbol, desiredPrice, tradeQuantity, "SELL");
 
                         //If the desired quantity still have leftover, then the leftoverStockQuantity will keep decreasing until 0 for each trade
-                        leftoverStockQuantity = leftoverStockQuantity - buyerQuantity;
-                        buyerQuantity = 0;
-
+                        leftoverStockQuantity = leftoverStockQuantity - tradeQuantity;
+                        buyerQuantity = buyerQuantity - tradeQuantity;
                     }
                 }
             }
@@ -361,7 +382,7 @@ public class BuySell {
     private void executePartialSellTrade(String stockSymbol, double tradePrice, int tradeQuantity, int buyerId, double buyerPrice,
                                     int buyerQuantity, int orderId) throws SQLException {
         // Calculate the total trade value
-        double totalTradeValue = tradePrice * buyerQuantity;
+        double totalTradeValue = tradePrice * tradeQuantity;
 
         // Update seller's funds
         double buyerFunds = usersTableOperations.getUserFunds(buyerId);
@@ -369,7 +390,7 @@ public class BuySell {
         usersTableOperations.updateUserFunds(buyerId, updatedBuyerFunds);
 
         // Deduct the stock quantity from the buyer's available quantity in the Orders table
-        ordersTableOperations.updateOrderQuantity(orderId,  0);
+        ordersTableOperations.updateOrderQuantity(orderId,  buyerQuantity - tradeQuantity);
 
         //Checks and remove if that item has 0 quantity in Orders table
         if (ordersTableOperations.getOrderQuantity(orderId) <= 0){
@@ -377,9 +398,9 @@ public class BuySell {
         }
 
         // Add stock to buyer's portfolio
-        portfolioTableOperations.addStockToPortfolio(buyerId, stockSymbol, buyerQuantity, tradePrice);
+        portfolioTableOperations.addStockToPortfolio(buyerId, stockSymbol, tradeQuantity, tradePrice);
 
         // Add transaction for the buyer
-        transactionsTableOperations.insertTransaction(buyerId, stockSymbol, tradePrice, buyerQuantity, "BUY");
+        transactionsTableOperations.insertTransaction(buyerId, stockSymbol, tradePrice, tradeQuantity, "BUY");
     }
 }
