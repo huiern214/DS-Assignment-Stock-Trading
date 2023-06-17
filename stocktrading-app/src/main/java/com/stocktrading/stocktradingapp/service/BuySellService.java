@@ -174,7 +174,7 @@ public class BuySellService {
 
         // Execute the trade by updating necessary tables and performing the transaction
         // Deduct the stock quantity from the seller's portfolio in the Portfolio table
-        PortfolioItem portfolioitem = portfolioTableOperationService.getEarliestMatchingPortfolioItem(sellerId, stockSymbol, sellerQuantity,price);
+        PortfolioItem portfolioitem = portfolioTableOperationService.getEarliestMatchingPortfolioItem(sellerId, stockSymbol);
         int portfolioId = portfolioitem.getPortfolioId();
         portfolioTableOperationService.updateStockQuantity(portfolioId, stockSymbol, sellerQuantity - quantity);
 
@@ -235,7 +235,7 @@ public class BuySellService {
 
     public void sellStock(String stockSymbol, double desiredPrice, int desiredQuantity, int sellerId) throws SQLException {
         // Step 1: Check if the seller owns enough stock in the portfolio
-        int portfolioQuantity = portfolioTableOperationService.getTotalStockQuantity(sellerId, stockSymbol, desiredPrice);
+        int portfolioQuantity = portfolioTableOperationService.getTotalStockQuantity(sellerId, stockSymbol);
         if (portfolioQuantity < desiredQuantity){
             throw new IllegalArgumentException("Seller does not own enough stock to sell.");
         }
@@ -276,7 +276,7 @@ public class BuySellService {
                 //If buyer's Order isn't 0, then it will keep looping until either the seller sold enough, or the buyer's Order is 0, then only move to the next Order.
                 while (buyerQuantity != 0) {
                     //get the earliest portfolio quantity in the seller's portfolio
-                    PortfolioItem firstPortfolio = portfolioTableOperationService.getEarliestMatchingSellPortfolioItem(sellerId, stockSymbol, desiredPrice);
+                    PortfolioItem firstPortfolio = portfolioTableOperationService.getEarliestMatchingPortfolioItem(sellerId, stockSymbol);
                     int firstPortfolioQuantity = firstPortfolio.getQuantity();
 
                     //If the desiredQuantity is less than buyer's Order
@@ -290,7 +290,7 @@ public class BuySellService {
                         userService.updateUserFunds(sellerId,(userService.getUserFunds(sellerId)) + (tradeQuantity * 100 * desiredPrice)); // 100 is the number of stocks per lot
 
                         //Update seller's portfolio
-                        PortfolioItem portfolioitem = portfolioTableOperationService.getEarliestMatchingSellPortfolioItem(sellerId, stockSymbol, desiredPrice);
+                        PortfolioItem portfolioitem = portfolioTableOperationService.getEarliestMatchingPortfolioItem(sellerId, stockSymbol);
                         int portfolioId = portfolioitem.getPortfolioId();
                         portfolioTableOperationService.updateStockQuantity(portfolioId, stockSymbol, firstPortfolioQuantity - tradeQuantity);
 
@@ -331,7 +331,7 @@ public class BuySellService {
                         userService.updateUserFunds(sellerId, (userService.getUserFunds(sellerId)) + (tradeQuantity * 100 * desiredPrice)); // 100 is the number of stocks per lot
 
                         // Deduct the stock quantity from the seller's portfolio in the Portfolio table
-                        PortfolioItem portfolioitem = portfolioTableOperationService.getEarliestMatchingSellPortfolioItem(sellerId, stockSymbol, desiredPrice);
+                        PortfolioItem portfolioitem = portfolioTableOperationService.getEarliestMatchingPortfolioItem(sellerId, stockSymbol);
                         int portfolioId = portfolioitem.getPortfolioId();
                         portfolioTableOperationService.updateStockQuantity(portfolioId, stockSymbol, (firstPortfolioQuantity - tradeQuantity));
 
