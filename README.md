@@ -11,7 +11,7 @@ To run the stock trading application locally, follow these steps:
 
 **Server**  
 1. Obtain your own API key from https://rapidapi.com/sparior/api/yahoo-finance15 (for real time stock data) 
-   and https://www.marketaux.com/news/exchange/KLSE (for Latest news)
+   and https://www.marketaux.com/news/country/my (for Latest news)
 2. Create an `.env` file in `stocktrading-app/src/main/resources`
   ```
     API_KEY="xxxxxxxxxxx"  
@@ -44,8 +44,8 @@ To run the stock trading application locally, follow these steps:
    
 ## Usage
 
-- Visit `http://localhost:8080/stocks` to view the list of available stocks
-- Visit `http://localhost:3000` to view the list of available stocks and search function
+- Visit `http://localhost:8080` to view the stock trading application (server)
+- Visit `http://localhost:3000` to view the stock trading application (client)
 
 ## Project Structure
 
@@ -59,6 +59,7 @@ stocktrading-app
 │   │   │   └── com
 │   │   │       └── stocktrading
 │   │   │           └── stocktradingapp
+│   │   │               ├── config
 │   │   │               ├── controller
 │   │   │               ├── model
 │   │   │               ├── service
