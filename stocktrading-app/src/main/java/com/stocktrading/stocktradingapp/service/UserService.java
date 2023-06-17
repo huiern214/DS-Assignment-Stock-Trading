@@ -173,47 +173,50 @@ public class UserService {
 
     // Get user profile by user id
     public User getUser(int userId) throws SQLException {
-        String getUserProfileQuery = "SELECT u.user_id, u.username, u.email, u.password, u.funds, p.stock_symbol, p.quantity, p.purchase_price " +
-                "FROM Users u " +
-                "LEFT JOIN Portfolio p ON u.user_id = p.user_id " +
-                "WHERE u.user_id = ?";
-        try (PreparedStatement statement = connection.prepareStatement(getUserProfileQuery)) {
-
-            statement.setInt(1, userId);
-
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    int fetchedUserId = resultSet.getInt("user_id");
-                    String username = resultSet.getString("username");
-                    String email = resultSet.getString("email");
-                    String password = resultSet.getString("password");
-                    double funds = resultSet.getDouble("funds");
-
-                    System.out.println("\nStock Symbol: " + resultSet.getString("stock_symbol"));
-                    System.out.println("Quantity: " + resultSet.getInt("quantity"));
-                    System.out.println("Purchase Price: " + resultSet.getDouble("purchase_price"));
-
-                    // Create a User object 
-                    User user = new User(username, email, password);
+        String getUserProfileQuery = "SELECT u.user_id, u.username, u.email, u.password, u.funds FROM Users u WHERE u.user_id = ?";
+        String getStocksQuery = "SELECT p.stock_symbol, p.quantity, p.purchase_price FROM Portfolio p WHERE p.user_id = ?";
+    
+        User user = null;
+        try (PreparedStatement userStatement = connection.prepareStatement(getUserProfileQuery);
+             PreparedStatement stocksStatement = connection.prepareStatement(getStocksQuery)) {
+    
+            userStatement.setInt(1, userId);
+            stocksStatement.setInt(1, userId);
+    
+            try (ResultSet userResultSet = userStatement.executeQuery()) {
+                if (userResultSet.next()) {
+                    int fetchedUserId = userResultSet.getInt("user_id");
+                    String username = userResultSet.getString("username");
+                    String email = userResultSet.getString("email");
+                    String password = userResultSet.getString("password");
+                    double funds = userResultSet.getDouble("funds");
+    
+                    user = new User(username, email, password);
                     user.setUserId(fetchedUserId);
                     user.setFunds(funds);
+                }
+            }
 
-                    do {
-                        String symbol = resultSet.getString("stock_symbol");
-                        int quantity = resultSet.getInt("quantity");      
+            if (user != null) {
+                try (ResultSet stocksResultSet = stocksStatement.executeQuery()) {
+                    while (stocksResultSet.next()) {
+                        String symbol = stocksResultSet.getString("stock_symbol");
+                        int quantity = stocksResultSet.getInt("quantity");
+                        double purchasePrice = stocksResultSet.getDouble("purchase_price");
+
+                        System.out.println("\nStock Symbol: " + symbol);
+                        System.out.println("Quantity: " + quantity);
+                        System.out.println("Purchase Price: " + purchasePrice);
+    
                         Stock stock = stockTableOperationService.getStock(symbol);
-                        Portfolio portfolio = new Portfolio();
-                        if (symbol != null)
-                            portfolio.addStock(stock, quantity);
-                        user.setPortfolio(portfolio);
-                    } while (resultSet.next());
-
-                    return user;
+                        if (stock != null) {
+                            user.getPortfolio().addStock(stock, quantity);
+                        }
+                    }
                 }
             }
         }
-
-        return null; // User not found
+        return user;
     }
 
     // Get all users

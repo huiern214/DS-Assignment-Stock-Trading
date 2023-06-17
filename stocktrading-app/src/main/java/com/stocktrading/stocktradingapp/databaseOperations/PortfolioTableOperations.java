@@ -190,7 +190,7 @@ public class PortfolioTableOperations {
     }
 
     public int getTotalStockQuantity(int userId, String stockSymbol, double stockPrice) throws SQLException {
-        String query = "SELECT SUM(quantity) FROM portfolio WHERE user_id = ? AND stock_symbol = ? AND purchase_price = ?";
+        String query = "SELECT SUM(quantity) FROM Portfolio WHERE user_id = ? AND stock_symbol = ? AND purchase_price = ?";
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, userId);
@@ -211,7 +211,7 @@ public class PortfolioTableOperations {
         List<PortfolioItem> portfolio = new ArrayList<>();
         StockTableOperations stockTableOperations = new StockTableOperations(connection);
 
-        String query = "SELECT * FROM portfolio WHERE user_id = ?";
+        String query = "SELECT * FROM Portfolio WHERE user_id = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, userId);
             ResultSet resultSet = statement.executeQuery();
