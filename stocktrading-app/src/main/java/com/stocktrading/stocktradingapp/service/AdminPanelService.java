@@ -54,6 +54,7 @@ public class AdminPanelService {
             statement.executeUpdate();
             // Update the COMPANY_CODES list in StockListingService
             stockListingService.getCOMPANY_CODES().add(code);
+            stockListingService.refreshStockData();
         }
          catch (SQLException e) {
             e.printStackTrace();
@@ -94,7 +95,16 @@ public class AdminPanelService {
         return stocks;
     }
 
-    public PriorityQueue<Stock> getStocks() {
+    public PriorityQueue<Stock> getStocks() throws SQLException {
         return stockListingService.getStockQueue();
+    }
+
+    public void updateStockQuantity(String code, int quantity) {
+        stockTableOperationService.updateStockQuantity(code, quantity);
+    }
+
+    // Update all stocks quantity to 500 lot in the database
+    public void updateAllStocksQuantity(int quantity) {
+        stockTableOperationService.updateAllStocksQuantity(quantity);
     }
 }

@@ -9,6 +9,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.stream.Collectors;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -52,7 +53,10 @@ public class StockListingService implements InitializingBean {
         return lastUpdateTime;
     }
 
-    public PriorityQueue<Stock> getStockQueue() {
+    public PriorityQueue<Stock> getStockQueue() throws SQLException {
+        // return stockQueue;
+        stockQueue.clear();
+        stockQueue.addAll(stockTableOperationService.getAllStocks());
         return stockQueue;
     }
 
@@ -83,18 +87,35 @@ public class StockListingService implements InitializingBean {
         }
 
         // Delete last character
-        symbolsBuilder.deleteCharAt(symbolsBuilder.length() - 1);
+        if (symbolsBuilder.length() > 0)
+            symbolsBuilder.deleteCharAt(symbolsBuilder.length() - 1);
         String company_symbols = symbolsBuilder.toString();
 
-        // Get the stock data for all symbols
-        this.stockQueue = stockService.getStockData(company_symbols);
+        // Get all stocks from the stock table
+        List<Stock> existingStocks = stockTableOperationService.getAllStocks();
 
-        // Add the stock data to the stock table if not exist, update if exist
-        if (stockQueue != null){
-            for (Stock stock : this.stockQueue) {
-                stockTableOperationService.addStock(stock.getName(), stock.getSymbol(), stock.getPrice());
+        List<String> stockSymbols = new ArrayList<String>();
+        for (String s : company_symbols.split(",")) {
+            stockSymbols.add(s);
+        }
+        // Check if the existing stocks cover all the company codes
+        boolean hasAllStocks = existingStocks.stream()
+                .map(Stock::getSymbol)
+                .collect(Collectors.toSet())
+                .containsAll(stockSymbols);
+
+        if (!hasAllStocks) {
+            // Get the stock data for all symbols
+            List<Stock> newStocks = stockService.getStockData(company_symbols);
+
+            // Update the stock table with new stock data
+            for (Stock stock : newStocks) {
+                stockTableOperationService.addStock(stock.getName(), stock.getSymbol(), stock.getPrice(), stock.getPriceChange(), stock.getPriceChangePercent());
             }
         }
+
+        // Update the stock queue with all stocks
+        stockQueue.addAll(stockTableOperationService.getAllStocks());
     }
 
     @Override
@@ -131,13 +152,14 @@ public class StockListingService implements InitializingBean {
 
     // Add a stock to the stockQueue
     public void addStock(Stock stock) throws SQLException {
-        stockTableOperationService.addStock(stock.getName(), stock.getSymbol(), stock.getPrice());
+        // stockTableOperationService.addStock(stock.getName(), stock.getSymbol(), stock.getPrice());
+        stockTableOperationService.addStock(stock.getName(), stock.getSymbol(), stock.getPrice(), stock.getPriceChange(), stock.getPriceChangePercent());
         stockQueue.offer(stock);
     }
 
     // Get a stock from the stockQueue
-    public Stock getStock(String symbol) {
-        for (Stock stock : stockQueue) {
+    public Stock getStock(String symbol) throws SQLException {
+        for (Stock stock : getStockQueue()) {
             if (stock.getSymbol().equals(symbol)) {
                 return stock;
             }
@@ -149,12 +171,6 @@ public class StockListingService implements InitializingBean {
     public void refreshStockData() throws SQLException {
         setLastUpdateTime(LocalDateTime.now());
 
-        // // Create a string of symbols separated by commas
-        // StringBuilder symbolsBuilder = new StringBuilder();
-        // for (Stock stock : stockQueue) {
-        //     symbolsBuilder.append(stock.getSymbol()).append(",");
-        // }
-
         // Build the symbols string
         StringBuilder symbolsBuilder = new StringBuilder();
         for (String code : COMPANY_CODES) {
@@ -164,25 +180,39 @@ public class StockListingService implements InitializingBean {
         // Delete last character
         symbolsBuilder.deleteCharAt(symbolsBuilder.length() - 1);
         String company_symbols = symbolsBuilder.toString();
-    
+
         // Get the updated stock data for all symbols
-        PriorityQueue<Stock> updatedStocks = stockService.getStockData(company_symbols);
-    
-        // Update the stock data in the stockQueue
+        List<Stock> updatedStocks = stockService.getStockData(company_symbols);
+
+        // Update the stock data in the stockQueue and stock table
         if (updatedStocks != null) {
+            // Clear the existing stockQueue
+            stockQueue.clear();
+
             for (Stock updatedStock : updatedStocks) {
-                Stock existingStock = getStock(updatedStock.getSymbol());
+                Stock existingStock = stockTableOperationService.getStock(updatedStock.getSymbol());
                 if (existingStock != null) {
                     existingStock.setPrice(updatedStock.getPrice());
                     existingStock.setPriceChange(updatedStock.getPriceChange());
                     existingStock.setPriceChangePercent(updatedStock.getPriceChangePercent());
                     stockTableOperationService.updateStockPrice(existingStock.getSymbol(), existingStock.getPrice());
+                    stockTableOperationService.updateStockPriceChange(existingStock.getSymbol(), existingStock.getPriceChange());
+                    stockTableOperationService.updateStockPriceChangePercent(existingStock.getSymbol(), existingStock.getPriceChangePercent());
+
+                    // Add the existing stock to the stockQueue
+                    stockQueue.add(existingStock);
                 } else {
-                    addStock(updatedStock);
+                    stockTableOperationService.addStock(updatedStock.getName(), updatedStock.getSymbol(), updatedStock.getPrice(), updatedStock.getPriceChange(), updatedStock.getPriceChangePercent());
+
+                    // Add the newly added stock to the stockQueue
+                    Stock newlyAddedStock = stockTableOperationService.getStock(updatedStock.getSymbol());
+                    if (newlyAddedStock != null) {
+                        stockQueue.add(newlyAddedStock);
+                    }
                 }
             }
         }
-    }    
+    }
 
     // Search for stocks by symbol or name
     public List<Stock> searchStocks(String query) {

@@ -24,7 +24,8 @@ public class StockAPIService {
     @Value("${stock.trading.api.key}")
     private String API_KEY;
 
-    public PriorityQueue<Stock> getStockData(String symbols) {
+    // public PriorityQueue<Stock> getStockData(String symbols) {
+    public List<Stock> getStockData(String symbols) {
         String url = API_BASE_URL + symbols;
 
         HttpRequest request = HttpRequest.newBuilder()
@@ -42,11 +43,13 @@ public class StockAPIService {
             return null;
         }
 
-        PriorityQueue<Stock> stocks = parseResponse(response);
+        // PriorityQueue<Stock> stocks = parseResponse(response);
+        List<Stock> stocks = parseResponse(response);
         return stocks;
     }
 
-    private PriorityQueue<Stock> parseResponse(HttpResponse<String> response) {
+    // private PriorityQueue<Stock> parseResponse(HttpResponse<String> response) {
+    private List<Stock> parseResponse(HttpResponse<String> response) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             JsonNode jsonNode = objectMapper.readTree(response.body());
@@ -70,13 +73,15 @@ public class StockAPIService {
                 stockList.sort(Comparator.comparing(Stock::getName));
 
                 // Create a PriorityQueue based on the sorted list
-                PriorityQueue<Stock> stockQueue = new PriorityQueue<>(Comparator.comparing(Stock::getName));
-                stockQueue.addAll(stockList);
+                // PriorityQueue<Stock> stockQueue = new PriorityQueue<>(Comparator.comparing(Stock::getName));
+                // stockQueue.addAll(stockList);
     
-                for (Stock stock : stockQueue) {
-                    System.out.print(stock.getPrice() + ", ");
-                }
-                return stockQueue;
+                // for (Stock stock : stockQueue) {
+                //     System.out.print(stock.getPrice() + ", ");
+                // }
+                // return stockQueue;
+                System.out.println(stockList);
+                return stockList;
             }
         } catch (IOException e) {
             // Handle exception

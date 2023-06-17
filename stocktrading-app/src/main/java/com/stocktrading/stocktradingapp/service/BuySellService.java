@@ -225,7 +225,7 @@ public class BuySellService {
         userService.updateUserFunds(sellerId, sellerBalance + (sellerQuantity * 100 * sellerPrice)); // 100 is the number of stocks per lot
 
         // Add the stock to the buyer's portfolio in the Portfolio table with the purchased quantity
-//        portfolioTableOperationService.addStockToPortfolio(sellerId, stockSymbol, sellerQuantity, price);
+        // portfolioTableOperationService.addStockToPortfolio(sellerId, stockSymbol, sellerQuantity, price);
 
         // Insert the trade details into the Transactions table
         transactionsTableOperationService.insertTransaction(sellerId, stockSymbol, price, sellerQuantity, "SELL");

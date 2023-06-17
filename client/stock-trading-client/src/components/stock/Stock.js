@@ -86,6 +86,11 @@ const Stock = () => {
       console.log('Please enter a value for both fields.');
       return;
     }
+
+    if (userId === null) {
+      console.log('Please login to trade.');
+      return;
+    }
   
     try {
       if (action === 'buy') {
@@ -140,6 +145,7 @@ const Stock = () => {
                 <p className={getChangeClass(stockData.priceChangePercent)}>({Number(stockData.priceChangePercent).toFixed(4)})</p>
               </div>
               <p className="updated-time">Last Update: {new Date(lastUpdateTime).toLocaleString()}</p>
+              <p className="updated-time">System stock qty: {stockData.systemQuantity}</p>
             </div>
             <div className="stock-actions">
               <Popup trigger={<button className="buy-button">Buy</button>} modal nested>

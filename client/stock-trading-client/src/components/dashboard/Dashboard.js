@@ -18,6 +18,9 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      if (userId === null) {
+        return <p>Loading dashboard data...</p>;
+      }
       try {
         const dashboardResponse = await api.get(`/dashboard/${userId}`);
         const portfolioResponse = await api.get(`/dashboard/${userId}/portfolio`);
@@ -113,7 +116,11 @@ const Dashboard = () => {
             <tbody>
               {dashboardData.openPositions.map((position) => (
                 <tr key={position.symbol}>
-                  <td>{position.symbol}</td>
+                  <td>
+                    <a className="stock-link" href={`/stocks/${position.symbol}`}>
+                      {position.symbol}
+                    </a>
+                  </td>
                   <td>{position.qtySold}</td>
                   <td>{position.entryPrice.toFixed(2)}</td>
                   <td>{position.exitPrice.toFixed(2)}</td>
@@ -151,7 +158,11 @@ const Dashboard = () => {
             <tbody>
               {dashboardData.tradeHistory.map((trade) => (
                 <tr key={trade.symbol}>
-                  <td>{trade.symbol}</td>
+                  <td>
+                    <a className="stock-link" href={`/stocks/${trade.symbol}`}>
+                      {trade.symbol}
+                    </a>
+                  </td>
                   <td>{trade.qtySold}</td>
                   <td>{trade.entryPrice.toFixed(2)}</td>
                   <td>{trade.exitPrice.toFixed(2)}</td>
