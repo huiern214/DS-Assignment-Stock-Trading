@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import api from '../../api/axiosConfig';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
 
 import './StockList.css';
 
@@ -11,7 +11,7 @@ const StockList = () => {
 
   const fetchStockData = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/stocks');
+      const response = await api.get('/stocks');
       const stockData = Array.from(response.data);
       setStocks(stockData);
   
@@ -29,7 +29,7 @@ const StockList = () => {
   
   // const refreshStockData = async () => {
   //   try {
-  //     await axios.get('http://localhost:8080/stocks/refresh');
+  //     await api.get('/stocks/refresh');
   //     fetchStockData();
   //   } catch (error) {
   //     console.error('Error refreshing stock data:', error);
@@ -46,7 +46,7 @@ const StockList = () => {
 
   const handleSearch = async () => {
     try {
-      const response = await axios.post('http://localhost:8080/stocks/search', {
+      const response = await api.post('/stocks/search', {
         query: searchQuery,
       });
       const searchResults = Array.from(response.data);

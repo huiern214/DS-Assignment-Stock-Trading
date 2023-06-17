@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import api from '../../api/axiosConfig';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import axios from 'axios';
 import Popup from 'reactjs-popup';
 import './Stock.css';
 import { toast, ToastContainer } from 'react-toastify';
@@ -33,7 +33,7 @@ const Stock = () => {
 
   const fetchSingleStockData = async (key) => {
     try {
-      const response = await axios.get(`http://localhost:8080/stocks/${key}`);
+      const response = await api.get(`/stocks/${key}`);
       const stockData = response.data;
       setStockData(stockData);
 
@@ -53,8 +53,8 @@ const Stock = () => {
   const fetchMarketDepth = async (key) => {
     try {
       const [bidResponse, askResponse] = await Promise.all([
-        axios.get(`http://localhost:8080/stocks/bid-data/${key}`),
-        axios.get(`http://localhost:8080/stocks/ask-data/${key}`),
+        api.get(`/stocks/bid-data/${key}`),
+        api.get(`/stocks/ask-data/${key}`),
       ]);
 
       setBidData(bidResponse.data);
@@ -81,19 +81,6 @@ const Stock = () => {
     }
   };
 
-  // const handleTradeStock = () => {
-  //   if (!tradeAmount || !numberOfShares) {
-  //     console.log('Please enter a value for both fields.');
-  //     return;
-  //   }
-  //     // Perform the buy action with the bid amount and number of shares
-  //     console.log('Trade stock:', tradeAmount, numberOfShares);
-  //     // You can add your buy logic here
-
-  //     // Reset the input fields
-  //     setTradeAmount('');
-  //     setNumberOfShares('');
-  // };
   const handleTradeStock = async (action) => {
     if (!tradeAmount || !numberOfShares) {
       console.log('Please enter a value for both fields.');
@@ -102,7 +89,7 @@ const Stock = () => {
   
     try {
       if (action === 'buy') {
-        await axios.post('http://localhost:8080/api/buysell/buy', {
+        await api.post('/api/buysell/buy', {
           stockSymbol: key,
           desiredPrice: tradeAmount,
           desiredQuantity: numberOfShares,
@@ -111,7 +98,7 @@ const Stock = () => {
         console.log('Stock bought successfully.');
         toast.success('Stock bought successfully.');
       } else if (action === 'sell') {
-        await axios.post('http://localhost:8080/api/buysell/sell', {
+        await api.post('/api/buysell/sell', {
           stockSymbol: key,
           desiredPrice: tradeAmount,
           desiredQuantity: numberOfShares,

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import api from '../../api/axiosConfig';
 import { useSelector } from 'react-redux';
-import axios from 'axios';
 
 import './Orders.css';
 
@@ -12,9 +12,9 @@ const Orders = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const sellResponse = await axios.get(`http://localhost:8080/orders/user/${userId}`);
+        const sellResponse = await api.get(`/orders/user/${userId}`);
         setSellOrders(sellResponse.data.filter((order) => order.orderType === 'SELL'));
-        const buyResponse = await axios.get(`http://localhost:8080/orders/user/${userId}`);
+        const buyResponse = await api.get(`/orders/user/${userId}`);
         setBuyOrders(buyResponse.data.filter((order) => order.orderType === 'BUY'));
       } catch (error) {
         console.log('Error fetching orders:', error);
@@ -24,18 +24,9 @@ const Orders = () => {
     fetchOrders();
   }, [userId]);
 
-  // const handleDeleteOrder = async (orderId) => {
-  //   try {
-  //     await axios.delete(`/orders/${orderId}`);
-  //     setSellOrders(sellOrders.filter((order) => order.orderId !== orderId));
-  //     setBuyOrders(buyOrders.filter((order) => order.orderId !== orderId));
-  //   } catch (error) {
-  //     console.log('Error deleting order:', error);
-  //   }
-  // };
   const handleDeleteOrder = async (orderId) => {
     try {
-      await axios.delete('http://localhost:8080/orders/delete-order', {
+      await api.delete('/orders/delete-order', {
         data: { order_id: orderId },
       });
       setSellOrders(sellOrders.filter((order) => order.orderId !== orderId));
@@ -65,11 +56,10 @@ const Orders = () => {
             <tr key={order.orderId}>
               <td>{order.orderId}</td>
               <td>
-                <a className="stock-link" href={`http://localhost:3000/stocks/${order.stockSymbol}`}>
+                <a className="stock-link" href={`/stocks/${order.stockSymbol}`}>
                   {order.stockSymbol}
                 </a>
               </td>
-              {/* <td>{order.stockSymbol}</td> */}
               <td>{order.quantity}</td>
               <td>{order.price}</td>
               <td>
@@ -96,11 +86,10 @@ const Orders = () => {
             <tr key={order.orderId}>
               <td>{order.orderId}</td>
               <td>
-                <a className="stock-link" href={`http://localhost:3000/stocks/${order.stockSymbol}`}>
+                <a className="stock-link" href={`/stocks/${order.stockSymbol}`}>
                   {order.stockSymbol}
                 </a>
               </td>
-              {/* <td>{order.stockSymbol}</td> */}
               <td>{order.quantity}</td>
               <td>{order.price}</td>
               <td>

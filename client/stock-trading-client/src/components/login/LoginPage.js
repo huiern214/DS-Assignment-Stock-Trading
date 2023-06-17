@@ -1,11 +1,12 @@
-import axios from 'axios';
 import React, { useState } from 'react';
+import api from '../../api/axiosConfig';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginSuccess, loginFailure } from '../../redux/user/userActions';
+
 import './LoginPage.css';
 import loginImage from './stock-icon.png';
 import success from './success.png';
-import { useDispatch, useSelector } from 'react-redux';
-import { loginSuccess, loginFailure } from '../../redux/user/userActions';
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -51,7 +52,7 @@ function LoginPage() {
       }
   
       try {
-        const response = await axios.post('http://localhost:8080/api/users/register', {
+        const response = await api.post('/api/users/register', {
           username: username,
           email: email,
           password: password
@@ -72,7 +73,7 @@ function LoginPage() {
       }
     } else {
       try {
-        const response = await axios.post('http://localhost:8080/api/users/login', {
+        const response = await api.post('/api/users/login', {
           email: email,
           password: password
         });
@@ -89,7 +90,6 @@ function LoginPage() {
 
       } catch (error) {
         console.log(error);
-        // error_message = "Incorrect login credentials";
         dispatch(loginFailure("Incorrect login credentials"));
         setShowError(true);
       }

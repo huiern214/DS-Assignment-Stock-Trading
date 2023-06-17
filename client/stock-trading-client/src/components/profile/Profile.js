@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../../api/axiosConfig';
 import './Profile.css';
 import { useSelector } from 'react-redux';
 
@@ -13,7 +13,7 @@ function Profile() {
 
   const fetchUserProfile = async (userId) => {
     try {
-      const response = await axios.get(`http://localhost:8080/api/users/${userId}`);
+      const response = await api.get(`/api/users/${userId}`);
       if (response.status === 200) {
         const profileData = response.data;
         setProfileData(profileData);

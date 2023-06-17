@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import api from '../../api/axiosConfig';
 import { useSelector } from 'react-redux';
-import axios from 'axios';
+
 import './Leaderboard.css';
 import leaderboard from './leaderboard.png';
 
@@ -15,8 +16,8 @@ const Leaderboard = () => {
 
   const fetchLeaderboardData = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/api/leaderboard/top10');
-      const response2 = await axios.get(`http://localhost:8080/api/leaderboard/${userId}/rank`);
+      const response = await api.get('/api/leaderboard/top10');
+      const response2 = await api.get(`/api/leaderboard/${userId}/rank`);
       setLeaderboardData(response.data);
       setUserRank(response2.data);
     } catch (error) {

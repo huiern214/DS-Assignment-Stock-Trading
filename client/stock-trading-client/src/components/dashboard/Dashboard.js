@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
-import axios from 'axios';
+import api from '../../api/axiosConfig';
 import './Dashboard.css';
 import { useReactToPrint } from 'react-to-print';
 
@@ -19,10 +19,11 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const dashboardResponse = await axios.get(`http://localhost:8080/dashboard/${userId}`);
-        const portfolioResponse = await axios.get(`http://localhost:8080/dashboard/${userId}/portfolio`);
-        const response = await axios.get(`http://localhost:8080/api/users/${userId}`);
-        const response2 = await axios.get(`http://localhost:8080/api/leaderboard/${userId}/rank`);
+        const dashboardResponse = await api.get(`/dashboard/${userId}`);
+        const portfolioResponse = await api.get(`/dashboard/${userId}/portfolio`);
+        const response = await api.get(`/api/users/${userId}`);
+        const response2 = await api.get(`/api/leaderboard/${userId}/rank`);
+        
         if (response.status === 200) {
           const profileData = response.data;
           setProfileData(profileData);

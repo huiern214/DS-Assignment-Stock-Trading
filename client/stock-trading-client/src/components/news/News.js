@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../../api/axiosConfig';
 import './News.css';
 
 const News = () => {
@@ -11,7 +11,7 @@ const News = () => {
 
   const fetchNews = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/news');
+      const response = await api.get('/news');
       setNewsList(response.data);
     } catch (error) {
       console.log(error);

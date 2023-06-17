@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../api/axiosConfig';
 import './StockManagement.css';
 
 const StockManagement = () => {
@@ -20,7 +20,7 @@ const StockManagement = () => {
 
   const fetchStockList = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/admin/stock-list');
+      const response = await api.get('/admin/stock-list');
       setStockList(response.data);
     } catch (error) {
       console.error(error);
@@ -29,7 +29,7 @@ const StockManagement = () => {
 
   const fetchStockTable = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/stocks');
+      const response = await api.get('/stocks');
       const stockData = Array.from(response.data);
       setStockTable(stockData);
   
@@ -47,7 +47,7 @@ const StockManagement = () => {
 
   const handleDelete = async () => {
     try {
-      await axios.delete('http://localhost:8080/admin/delete-stock', { data: {code: deleteCode} });
+      await api.delete('/admin/delete-stock', { data: {code: deleteCode} });
       fetchStockList();
       fetchStockTable();
       setDeleteCode('');
@@ -58,7 +58,7 @@ const StockManagement = () => {
 
   const handleAdd = async () => {
     try {
-      await axios.post('http://localhost:8080/admin/add-stock', { code: addCode });
+      await api.post('/admin/add-stock', { code: addCode });
       fetchStockList();
       fetchStockTable();
       setAddCode('');
