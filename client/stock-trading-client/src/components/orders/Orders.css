@@ -1,0 +1,61 @@
+/* Add your custom CSS styles here */
+.order-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f4f4f4;
+    border-radius: 5px;
+  }
+  
+  .order-section {
+    margin-bottom: 30px;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .order-title {
+    text-align: left;
+    margin-bottom: 10px;
+  }
+
+  .order-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 auto;
+    margin-bottom: 5%;
+  }
+  
+  .order-table th,
+  .order-table td {
+    padding: 8px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .stock-link {
+    color: rgb(22, 91, 130);
+    text-decoration: underline;
+  }
+  
+  .order-delete-button {
+    background-color: rgb(254, 74, 74);
+    color: white;
+    font-display: flex;
+    height: 29px;
+    align-items: center; /* Center vertically */
+    border-radius: 4px; /* Set the border radius for rounded corners */
+    padding: 15px 20px; /* Set the padding for the button */
+    font-size: 14px; /* Set the font size */
+    text-align: center;
+    border: none; /* Remove the default button border */
+    cursor: pointer; /* Set the cursor to indicate it's clickable */
+    line-height: 3px;
+  }
+  .order-delete-button:hover {
+    background-color: #686868;
+    color: white;
+    border: #000000;
+  }
+  

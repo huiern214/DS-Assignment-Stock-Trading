@@ -1,0 +1,41 @@
+Case 1: No orders
+a) BUY: 
+if price matched, Buy stock from system
+else put BUY order in Orders table
+
+b) SELL:
+put SELL order in Orders table
+
+Case 2: Got orders
+a) Got SELL orders qty=5
+BUY: 
+i) buy qty=1 (expected output: SELL order qty 4, Seller portfolio qty -1, buyer portfolio +1)
+ii) buy qty=5 (expected output: SELL order qty 0 and removed, Seller portfolio qty -5, buyer portfolio +5)
+iii) buy qty=7 (expected output: SELL order qty 0 and removed, BUY order qty +2, Seller portfolio qty -5, buyer portfolio +5)
+
+b) Got BUY orders qty=5
+SELL: 
+i) sell qty=1 (expected output: BUY order qty 4, Buyer portfolio qty +1, seller portfolio -1)
+ii) sell qty=5 (expected output: BUY order qty 0 and removed, Buyer portfolio qty +5, seller portfolio -5)
+iii) sell qty=7 (expected output: BUY order qty 0 and removed, SELL order qty -2, Buyer portfolio qty -5, seller portfolio +5)
+
+c) Got SELL orders qty=5 + system stock (same price)
+BUY: 
+i) buy qty=5 (expected output: SELL order qty 0 and removed, Seller portfolio qty -5, buyer portfolio +5)
+ii) buy qty=7 (expected output: SELL order qty 0 and removed, System stock -2, Seller portfolio qty -5, buyer portfolio +7)
+
+BUY
+{
+  "stockSymbol": "3034.KL",
+  "desiredPrice": 3.3,
+  "desiredQuantity": 3,
+  "buyerId": 2
+}
+
+SELL
+{
+  "stockSymbol": "3034.KL",
+  "desiredPrice": 3.3,
+  "desiredQuantity": 4,
+  "sellerId": 1
+}

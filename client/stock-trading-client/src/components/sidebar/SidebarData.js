@@ -23,17 +23,23 @@ export const SidebarData = [
     cName: 'nav-text'
   },
   {
+    title: 'Leaderboard',
+    path: '/leaderboard',
+    icon: <IoIcons.IoMdTrophy />,
+    cName: 'nav-text'
+  },
+  {
     title: 'News',
     path: '/news',
     icon: <IoIcons.IoMdNotifications />,
     cName: 'nav-text'
   },
-  {
-    title: 'Messages',
-    path: '/messages',
-    icon: <FaIcons.FaEnvelopeOpenText />,
-    cName: 'nav-text'
-  },
+  // {
+  //   title: 'Messages',
+  //   path: '/messages',
+  //   icon: <FaIcons.FaEnvelopeOpenText />,
+  //   cName: 'nav-text'
+  // },
   {
     title: 'Profile',
     path: '/profile',

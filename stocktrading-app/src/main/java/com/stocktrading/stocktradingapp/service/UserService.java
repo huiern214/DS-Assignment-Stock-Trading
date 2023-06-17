@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.stocktrading.stocktradingapp.model.Stock;
 import com.stocktrading.stocktradingapp.model.User;
+import com.stocktrading.stocktradingapp.service.databaseOperations.StockTableOperationService;
 import com.stocktrading.stocktradingapp.model.Portfolio;
 
 @Service
@@ -55,6 +56,7 @@ public class UserService {
         return false;
     }
 
+    // updates a user's email
     public void updateUserEmail(int userId, String newEmail) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement("UPDATE Users SET email = ? WHERE user_id = ?")) {
             statement.setString(1, newEmail);
@@ -64,6 +66,7 @@ public class UserService {
         }
     }
 
+    // updates a user's password
     public void updateUserPassword(int userId, String newPassword) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement("UPDATE Users SET password = ? WHERE user_id = ?")) {
             statement.setString(1, newPassword);
@@ -73,6 +76,21 @@ public class UserService {
         }
     }
 
+    // updates a user's funds
+    public void updateUserFunds(int userId,double newFunds) throws SQLException {
+        String updateUserFundsQuery = "UPDATE Users SET funds = ? WHERE user_id = ?";
+        try (PreparedStatement statement = connection.prepareStatement(updateUserFundsQuery)) {
+            statement.setDouble(1, newFunds);
+            statement.setInt(2, userId);
+
+            statement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new SQLException("Failed to set user funds");
+        }
+    }
+
+    // get user email by user id
     public String getUserEmail(int userId) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement("SELECT email FROM Users WHERE user_id = ?")) {
             statement.setInt(1, userId);
@@ -87,6 +105,7 @@ public class UserService {
         return null; // Return null if user is not found
     }
 
+    // get user funds by user id
     public double getUserFunds(int userId) throws SQLException {
         String getUserFundsQuery = "SELECT funds FROM Users WHERE user_id = ?";
         try (PreparedStatement statement = connection.prepareStatement(getUserFundsQuery)) {
@@ -184,7 +203,8 @@ public class UserService {
                         int quantity = resultSet.getInt("quantity");      
                         Stock stock = stockTable.getStock(symbol);
                         Portfolio portfolio = new Portfolio();
-                        portfolio.addStock(stock, quantity);
+                        if (symbol != null)
+                            portfolio.addStock(stock, quantity);
                         user.setPortfolio(portfolio);
                     } while (resultSet.next());
 

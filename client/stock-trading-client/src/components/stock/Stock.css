@@ -308,3 +308,38 @@
       .active-content {
         display: block;
       }
+
+      /* .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 300px;
+        text-align: center;
+      }
+       */
+      .modal-content.success {
+        border-color: #4caf50;
+      }
+      .modal-content.error {
+        border-color: #f44336;
+      }
+      .modal-content h2 {
+        margin-top: 0;
+      }
+      .modal-content p {
+        margin-bottom: 20px;
+      }
+      .modal-content button {
+        margin-left: 10px;
+        padding: 8px 12px;
+        background-color: #3a8ae6;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .modal-content button:hover {
+        background-color: #1a83ff;
+      }
+      

@@ -11,6 +11,8 @@ import Dashboard from './components/dashboard/Dashboard';
 import UserManagement from './components/admin/UserManagement';
 import StockManagement from './components/admin/StockManagement';
 import News from './components/news/News';
+import Orders from './components/orders/Orders';
+import Leaderboard from './components/leaderboard/Leaderboard';
 
 function App() {
 
@@ -33,8 +35,10 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/stocks" element={<StockList />} ></Route>
             <Route path="/stocks/:stockId" element={<Stock />}></Route>
+            <Route path="/leaderboard" element={<Leaderboard />}></Route>
             <Route path="/news" element={<News />}></Route>
             <Route path="/dashboard" element={<Dashboard />}></Route>
+            <Route path="/order" element={<Orders />}></Route>
             <Route path="/profile" element={<Profile />}></Route>
             {renderRestrictedRoute(<UserManagement />, '/user_management')}
             {renderRestrictedRoute(<StockManagement />, '/stock_management')}
