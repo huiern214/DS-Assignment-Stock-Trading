@@ -15,12 +15,14 @@ public class PortfolioTableOperationService {
     private Connection connection;
     private final StockTableOperationService stockTableOperationService;
 
-    public PortfolioTableOperationService(Connection connection, StockTableOperationService stockTableOperationService) {
+    public PortfolioTableOperationService(Connection connection,
+            StockTableOperationService stockTableOperationService) {
         this.connection = connection;
         this.stockTableOperationService = stockTableOperationService;
     }
 
-    public void addStockToPortfolio(int userId, String stockSymbol, int quantity, double purchasePrice) throws SQLException {
+    public void addStockToPortfolio(int userId, String stockSymbol, int quantity, double purchasePrice)
+            throws SQLException {
         String addStockQuery = "INSERT INTO Portfolio (user_id, stock_symbol, quantity, purchase_price) VALUES (?, ?, ?, ?)";
 
         try (PreparedStatement statement = connection.prepareStatement(addStockQuery)) {
@@ -114,9 +116,10 @@ public class PortfolioTableOperationService {
         return -1; // Return -1 if the portfolio item is not found or an error occurs
     }
 
-    public PortfolioItem getEarliestMatchingPortfolioItem(int userId, String stockSymbol, int quantity,double desiredPrice) {
+    public PortfolioItem getEarliestMatchingPortfolioItem(int userId, String stockSymbol, int quantity,
+            double desiredPrice) {
         String query = "SELECT * FROM Portfolio WHERE user_id = ? AND quantity >= ? AND stock_symbol = ? AND purchase_price = ? ORDER BY purchase_date ASC LIMIT 1";
-        
+
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, userId);
             statement.setInt(2, quantity);
@@ -142,9 +145,35 @@ public class PortfolioTableOperationService {
         return null; // Return null if no matching portfolio item is found
     }
 
-    public PortfolioItem getEarliestMatchingSellPortfolioItem(int userId, String stockSymbol,double desiredPrice) {
+    public PortfolioItem getEarliestMatchingPortfolioItem(int userId, String stockSymbol) {
+        String query = "SELECT * FROM Portfolio WHERE user_id = ? AND stock_symbol = ? ORDER BY purchase_date ASC LIMIT 1";
+
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, userId);
+            statement.setString(2, stockSymbol);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    int portfolioId = resultSet.getInt("id");
+                    double purchasePrice = resultSet.getDouble("purchase_price");
+                    int retrievedQuantity = resultSet.getInt("quantity");
+
+                    Stock stock = stockTableOperationService.getStock(stockSymbol);
+
+                    return new PortfolioItem(portfolioId, stock, retrievedQuantity, purchasePrice);
+                }
+            }
+        } catch (SQLException e) {
+            // Handle any potential exceptions
+            e.printStackTrace();
+        }
+
+        return null; // Return null if no matching portfolio item is found
+    }
+
+    public PortfolioItem getEarliestMatchingSellPortfolioItem(int userId, String stockSymbol, double desiredPrice) {
         String query = "SELECT * FROM Portfolio WHERE user_id = ? AND stock_symbol = ? AND purchase_price = ? ORDER BY purchase_date ASC LIMIT 1";
-        
+
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, userId);
             statement.setString(2, stockSymbol);
@@ -186,9 +215,25 @@ public class PortfolioTableOperationService {
         return 0; // Return 0 if no result found
     }
 
+    public int getTotalStockQuantity(int userId, String stockSymbol) throws SQLException {
+        String query = "SELECT SUM(quantity) FROM Portfolio WHERE user_id = ? AND stock_symbol = ?";
+
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, userId);
+            statement.setString(2, stockSymbol);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getInt(1);
+                }
+            }
+        }
+        return 0; // Return 0 if no result found
+    }
+
     public List<PortfolioItem> getUserPortfolio(int userId) throws SQLException {
         List<PortfolioItem> portfolio = new ArrayList<>();
-        
+
         String query = "SELECT * FROM Portfolio WHERE user_id = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, userId);
@@ -202,7 +247,7 @@ public class PortfolioTableOperationService {
 
                 Stock stock = stockTableOperationService.getStock(stockSymbol);
 
-                PortfolioItem portfolioItem = new PortfolioItem(portfolioId, stock , quantity, purchasePrice);
+                PortfolioItem portfolioItem = new PortfolioItem(portfolioId, stock, quantity, purchasePrice);
                 portfolio.add(portfolioItem);
             }
         }
