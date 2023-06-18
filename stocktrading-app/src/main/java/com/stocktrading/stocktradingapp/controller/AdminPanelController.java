@@ -94,4 +94,20 @@ public class AdminPanelController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update stocks quantity");
         }
     }
+
+    // http://localhost:8080/admin/delete-user-high-funds
+    @DeleteMapping("/delete-user-high-funds")
+    public ResponseEntity<String> deleteUsersWithHighFunds(@RequestBody Map<String, Double> minFunds) {
+        try {
+            boolean success = adminPanelService.deleteUsersWithHighFunds(minFunds.get("minFunds"));
+            if (success) {
+                return ResponseEntity.ok("Users with funds greater than or equal to " + minFunds + " deleted successfully.");
+            } else {
+                return ResponseEntity.badRequest().body("Failed to delete users with high funds.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while deleting users.");
+        }
+    }
 }
