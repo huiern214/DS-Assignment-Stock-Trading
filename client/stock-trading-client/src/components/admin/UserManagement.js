@@ -64,6 +64,7 @@ const UserManagement = () => {
             <th>User ID</th>
             <th>Username</th>
             <th>Email</th>
+            <th>Funds</th>
           </tr>
         </thead>
         <tbody>
@@ -72,6 +73,7 @@ const UserManagement = () => {
               <td>{user.userId}</td>
               <td>{user.username}</td>
               <td>{user.email}</td>
+              <td>{user.funds}</td>
             </tr>
           ))}
         </tbody>

@@ -86,6 +86,7 @@ const StockList = () => {
               <th>Price</th>
               <th>Price Change</th>
               <th>Change %</th>
+              <th>System Stock Qty</th>
             </tr>
           </thead>
           <tbody className="table-body">
@@ -104,6 +105,7 @@ const StockList = () => {
                 <td className={getChangeClass(stock.priceChangePercent)}>
                   {Number(stock.priceChangePercent).toFixed(4)}
                 </td>
+                <td>{stock.systemQuantity}</td>
               </tr>
             ))}
           </tbody>

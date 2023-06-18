@@ -8,6 +8,7 @@ const StockManagement = () => {
   const [addCode, setAddCode] = useState('');
   const [stockTable, setStockTable] = useState([]);
   const [lastUpdateTime, setLastUpdateTime] = useState('');
+  const [sysQty, setSysQty] = useState(500);
 
   useEffect(() => {
     fetchStockList();
@@ -62,8 +63,20 @@ const StockManagement = () => {
       fetchStockList();
       fetchStockTable();
       setAddCode('');
+      window.location.reload();
     } catch (error) {
       console.error(error);
+    }
+  };
+
+  const handleUpdateStocks = async () => {
+    try {
+      await api.post('/admin/update-stocks-quantity', { sys_qty: sysQty });
+      console.log('Stocks quantity updated successfully');
+      // Refresh the page
+      window.location.reload();
+    } catch (error) {
+      console.error('Failed to update stocks quantity:', error);
     }
   };
 
@@ -88,7 +101,7 @@ const StockManagement = () => {
                 </option>
             ))}
             </select>
-            <button className="stock-delete-button" onClick={handleDelete}>
+            <button className="stock-delete-button" onClick={handleDelete} disabled={!deleteCode}>
             Delete
             </button>
         </div>
@@ -100,8 +113,19 @@ const StockManagement = () => {
             value={addCode}
             onChange={(e) => setAddCode(e.target.value)}
             />
-            <button className="stock-add-button" onClick={handleAdd}>
+            <button className="stock-add-button" onClick={handleAdd} disabled={!addCode}>
             Add
+            </button>
+            <input
+              type="number"
+              className="stock-input"
+              placeholder="Enter stock quantity"
+              value={sysQty}
+              onChange={(e) => setSysQty(e.target.value)}
+              required
+            />
+            <button className="stock-add-button" onClick={handleUpdateStocks} disabled={!sysQty}>
+              Update
             </button>
         </div>
       </div>
@@ -115,12 +139,17 @@ const StockManagement = () => {
                 <th>Price</th>
                 <th>Price Change</th>
                 <th>Change %</th>
+                <th>System Stock Qty</th>
             </tr>
             </thead>
             <tbody>
             {stockTable.map((stock) => (
                 <tr key={stock.symbol}>
-                <td>{stock.symbol}</td>
+                <td>
+                  <a className="stock-link" href={`/stocks/${stock.symbol}`}>
+                    {stock.symbol}
+                  </a>  
+                </td>
                 <td className="stock-name">{stock.name}</td>
                 <td>{Number(stock.price).toFixed(2)}</td>
                 <td className={getChangeClass(stock.priceChange)}>
@@ -129,6 +158,7 @@ const StockManagement = () => {
                 <td className={getChangeClass(stock.priceChangePercent)}>
                 {Number(stock.priceChangePercent).toFixed(4)}
                 </td>
+                <td>{stock.systemQuantity}</td>
             </tr>
             ))}
             </tbody>

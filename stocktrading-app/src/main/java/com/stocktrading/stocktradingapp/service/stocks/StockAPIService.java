@@ -10,7 +10,6 @@ import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.PriorityQueue;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,7 +23,8 @@ public class StockAPIService {
     @Value("${stock.trading.api.key}")
     private String API_KEY;
 
-    public PriorityQueue<Stock> getStockData(String symbols) {
+    // public PriorityQueue<Stock> getStockData(String symbols) {
+    public List<Stock> getStockData(String symbols) {
         String url = API_BASE_URL + symbols;
 
         HttpRequest request = HttpRequest.newBuilder()
@@ -42,11 +42,13 @@ public class StockAPIService {
             return null;
         }
 
-        PriorityQueue<Stock> stocks = parseResponse(response);
+        // PriorityQueue<Stock> stocks = parseResponse(response);
+        List<Stock> stocks = parseResponse(response);
         return stocks;
     }
 
-    private PriorityQueue<Stock> parseResponse(HttpResponse<String> response) {
+    // private PriorityQueue<Stock> parseResponse(HttpResponse<String> response) {
+    private List<Stock> parseResponse(HttpResponse<String> response) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             JsonNode jsonNode = objectMapper.readTree(response.body());
@@ -65,18 +67,9 @@ public class StockAPIService {
                     stockList.add(stock);
                 }
     
-                // Since PriorityQueue does not allow sorting, we will sort the list first
                 // Sort the list based on the name in ascending order
                 stockList.sort(Comparator.comparing(Stock::getName));
-
-                // Create a PriorityQueue based on the sorted list
-                PriorityQueue<Stock> stockQueue = new PriorityQueue<>(Comparator.comparing(Stock::getName));
-                stockQueue.addAll(stockList);
-    
-                for (Stock stock : stockQueue) {
-                    System.out.print(stock.getPrice() + ", ");
-                }
-                return stockQueue;
+                return stockList;
             }
         } catch (IOException e) {
             // Handle exception

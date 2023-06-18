@@ -11,6 +11,9 @@ const Orders = () => {
 
   useEffect(() => {
     const fetchOrders = async () => {
+      if (userId === null) {
+        return <p>Loading orders...</p>;
+      }
       try {
         const sellResponse = await api.get(`/orders/user/${userId}`);
         setSellOrders(sellResponse.data.filter((order) => order.orderType === 'SELL'));
@@ -25,6 +28,9 @@ const Orders = () => {
   }, [userId]);
 
   const handleDeleteOrder = async (orderId) => {
+    if (userId === null) {
+      return <p>Loading...</p>;
+    }
     try {
       await api.delete('/orders/delete-order', {
         data: { order_id: orderId },

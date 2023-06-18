@@ -82,8 +82,23 @@ const Stock = () => {
   };
 
   const handleTradeStock = async (action) => {
+
+    // Check if it is within market hours
+    if (!isWithinMarketHours()) {
+      console.log('Trading is only allowed during market hours.');
+      toast.error('Trading is only allowed during market hours.');
+      return;
+    }
+
     if (!tradeAmount || !numberOfShares) {
       console.log('Please enter a value for both fields.');
+      toast.error('Please enter a value for both fields.');
+      return;
+    }
+
+    if (userId === null) {
+      console.log('Please login to trade.');
+      toast.error('Please login to trade.');
       return;
     }
   
@@ -121,6 +136,25 @@ const Stock = () => {
     }
   };
 
+  const isWithinMarketHours = () => {
+    const now = new Date();
+    const dayOfWeek = now.getDay();
+    const hour = now.getHours();
+    const minute = now.getMinutes();
+
+    // Check if it is a weekday (Monday to Friday)
+    if (dayOfWeek === 0 || dayOfWeek === 6) {
+      return false;
+    }
+
+    // Check if it is within market hours (9:00 AM - 12:30 PM and 2:30 PM - 5:00 PM)
+    if ((hour >= 9 && hour < 12) || (hour === 12 && minute <= 30) || (hour >= 14 && hour < 17)) {
+      return true;
+    }
+
+    return false;
+  };
+
   const getChangeClass = (value) => {
     return value < 0 ? 'negative-change' : 'positive-change';
   };
@@ -140,6 +174,7 @@ const Stock = () => {
                 <p className={getChangeClass(stockData.priceChangePercent)}>({Number(stockData.priceChangePercent).toFixed(4)})</p>
               </div>
               <p className="updated-time">Last Update: {new Date(lastUpdateTime).toLocaleString()}</p>
+              <p className="updated-time">System stock qty: {stockData.systemQuantity}</p>
             </div>
             <div className="stock-actions">
               <Popup trigger={<button className="buy-button">Buy</button>} modal nested>
@@ -164,10 +199,12 @@ const Stock = () => {
                           onChange={handleNumberOfSharesChange}
                           step="1"
                           min="1"
+                          max="99999"
                         />
                       </div>
+                      <p>Total: {(tradeAmount * numberOfShares * 100).toFixed(2)}</p>
                       <div className="modal-buttons">
-                        <button onClick={() => { handleTradeStock('buy'); close(); }} disabled={!tradeAmount || !numberOfShares}>Buy</button>
+                        <button onClick={() => { handleTradeStock('buy'); close(); }} disabled={!tradeAmount || !numberOfShares || numberOfShares > 99999}>Buy</button>
                         <button onClick={close}>Cancel</button>
                       </div>
                     </div>
@@ -195,10 +232,13 @@ const Stock = () => {
                           value={numberOfShares}
                           onChange={handleNumberOfSharesChange}
                           step="1"
+                          min="1"
+                          max="99999"
                         />
                       </div>
+                      <p>Total: {(tradeAmount * numberOfShares * 100).toFixed(2)}</p>
                       <div className="modal-buttons">
-                        <button onClick={() => { handleTradeStock('sell'); close(); }} disabled={!tradeAmount || !numberOfShares}>Sell</button>
+                        <button onClick={() => { handleTradeStock('sell'); close(); }} disabled={!tradeAmount || !numberOfShares || numberOfShares > 99999}>Sell</button>
                         <button onClick={close}>Cancel</button>
                       </div>
                     </div>

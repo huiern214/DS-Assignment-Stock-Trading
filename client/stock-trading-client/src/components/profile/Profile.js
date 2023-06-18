@@ -13,6 +13,9 @@ function Profile() {
 
   const fetchUserProfile = async (userId) => {
     try {
+      if (userId === null) {
+        return <div>Loading profile...</div>;
+      }
       const response = await api.get(`/api/users/${userId}`);
       if (response.status === 200) {
         const profileData = response.data;
@@ -61,7 +64,7 @@ function Profile() {
       <div className="profile-content">
         <div className="profile-item">
           <label>Total Market Value: </label>
-          <span>MYR {profileData.portfolio.value}</span>
+          <span>MYR {profileData.portfolio.value? profileData.portfolio.value.toFixed(2) : '0.00'}</span>
         </div>
         <div className="portfolio-table">
           <table>

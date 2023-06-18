@@ -43,8 +43,5 @@ public class Portfolio {
         }
         return value;
     }
-
-    public void setHoldings(Map<Stock, Integer> holdings2) {
-    }
 }
 

@@ -16,4 +16,3 @@ public class DatabaseConfiguration {
         return DriverManager.getConnection(databaseUrl);
     }
 }
-

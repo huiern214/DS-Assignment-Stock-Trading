@@ -25,7 +25,6 @@ public class NewsAPIService {
     
     // fetch news data from API &language=en&countries=my
     public List<News> fetchNewsData(String publishedAfter) {
-        // String url = NEWS_API_BASE_URL + "?exchanges=KLSE&filter_entities=true&limit=10&published_after=" + publishedAfter + "&api_token=" + NEWS_API_TOKEN;
         String url = NEWS_API_BASE_URL + "?filter_entities=true&limit=10&published_after=" + publishedAfter + "&api_token=" + NEWS_API_TOKEN + "&language=en&countries=my";
         System.out.println("Fetching news data from: " + url);
         HttpRequest request = HttpRequest.newBuilder()

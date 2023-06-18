@@ -18,6 +18,9 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      if (userId === null) {
+        return <p>Loading dashboard data...</p>;
+      }
       try {
         const dashboardResponse = await api.get(`/dashboard/${userId}`);
         const portfolioResponse = await api.get(`/dashboard/${userId}/portfolio`);
@@ -77,10 +80,9 @@ const Dashboard = () => {
                 MYR {dashboardData.unrealisedPnL ? dashboardData.unrealisedPnL.toFixed(2) : '0.00'}
               </p>
               <span className="small-text">
-                {typeof dashboardData.unrealisedPnLPercentage === 'number'
+                ({typeof dashboardData.unrealisedPnLPercentage === 'number'
                   ? dashboardData.unrealisedPnLPercentage.toFixed(2)
-                  : '0.00'}
-                %
+                  : '0.00'}%)
               </span>
             </div>
             <div>
@@ -98,12 +100,13 @@ const Dashboard = () => {
         {/* Open Positions */}
         <div className="dashboard-section">
         <h2 className="dashboard-h2">Open Positions</h2>
+        <div className="note"> Note: Qty (1 lot = 100 shares)</div>
         {dashboardData.openPositions.length > 0 ? (
           <table>
             <thead>
               <tr>
                 <th>Symbol</th>
-                <th>Qty Sold</th>
+                <th>Qty</th>
                 <th>Entry Price</th>
                 <th>Market Price</th>
                 <th>Entry Time</th>
@@ -113,7 +116,11 @@ const Dashboard = () => {
             <tbody>
               {dashboardData.openPositions.map((position) => (
                 <tr key={position.symbol}>
-                  <td>{position.symbol}</td>
+                  <td>
+                    <a className="stock-link" href={`/stocks/${position.symbol}`}>
+                      {position.symbol}
+                    </a>
+                  </td>
                   <td>{position.qtySold}</td>
                   <td>{position.entryPrice.toFixed(2)}</td>
                   <td>{position.exitPrice.toFixed(2)}</td>
@@ -151,7 +158,11 @@ const Dashboard = () => {
             <tbody>
               {dashboardData.tradeHistory.map((trade) => (
                 <tr key={trade.symbol}>
-                  <td>{trade.symbol}</td>
+                  <td>
+                    <a className="stock-link" href={`/stocks/${trade.symbol}`}>
+                      {trade.symbol}
+                    </a>
+                  </td>
                   <td>{trade.qtySold}</td>
                   <td>{trade.entryPrice.toFixed(2)}</td>
                   <td>{trade.exitPrice.toFixed(2)}</td>

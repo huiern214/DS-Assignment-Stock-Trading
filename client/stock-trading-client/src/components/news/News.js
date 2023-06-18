@@ -27,7 +27,7 @@ const News = () => {
           <div className="news-details">
             <h3 className="news-title">{news.title}</h3>
             <p className="news-description">{news.description}</p>
-            <p className="news-published-at">Published At: {news.publishedAt}</p>
+            <p className="news-published-at">Published At: {new Date(news.publishedAt).toLocaleString()}</p>
             <p className="news-source">Source: {news.source}</p>
             <a href={news.url} target="_blank" rel="noopener noreferrer" className="news-read-more">Read More</a>
           </div>

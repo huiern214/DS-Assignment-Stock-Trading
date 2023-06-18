@@ -82,4 +82,16 @@ public class AdminPanelController {
     // {
     //     "user_id": 2
     // }
+
+    // http://localhost:8080/admin/update-stocks-quantity
+    @PostMapping("/update-stocks-quantity")
+    public ResponseEntity<String> updateStocksQuantity(@RequestBody Map<String, Integer> sysQty) {
+        try {
+            adminPanelService.updateAllStocksQuantity(sysQty.get("sys_qty"));
+            return ResponseEntity.ok("Stocks quantity updated successfully");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update stocks quantity");
+        }
+    }
 }

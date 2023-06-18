@@ -47,6 +47,14 @@
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
+
+  .note {
+    font-size: 14px;
+    color: gray;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    text-align: left;
+  }
   
   table {
     width: 100%;

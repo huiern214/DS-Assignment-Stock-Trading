@@ -1,7 +1,6 @@
 package com.stocktrading.stocktradingapp.service;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,11 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.mindrot.jbcrypt.BCrypt;
 
 import com.stocktrading.stocktradingapp.model.Stock;
 import com.stocktrading.stocktradingapp.model.User;
 import com.stocktrading.stocktradingapp.service.databaseOperations.StockTableOperationService;
-import com.stocktrading.stocktradingapp.model.Portfolio;
 
 @Service
 public class UserService {
@@ -32,7 +31,11 @@ public class UserService {
         try (PreparedStatement statement = connection.prepareStatement("INSERT INTO Users (username, email, password) VALUES (?, ?, ?)")) {
             statement.setString(1, username);
             statement.setString(2, email);
-            statement.setString(3, password);
+
+            // Hash the password
+            String hashedPassword = hashPassword(password);
+            statement.setString(3, hashedPassword);
+            // statement.setString(3, password);
 
             statement.executeUpdate();
             return true;
@@ -70,7 +73,10 @@ public class UserService {
     // updates a user's password
     public void updateUserPassword(int userId, String newPassword) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement("UPDATE Users SET password = ? WHERE user_id = ?")) {
-            statement.setString(1, newPassword);
+            // Hash the password
+            String hashedPassword = hashPassword(newPassword);
+            statement.setString(1, hashedPassword);
+            // statement.setString(1, newPassword);
             statement.setInt(2, userId);
 
             statement.executeUpdate();
@@ -138,17 +144,19 @@ public class UserService {
     
     // Authenticate user by email and password
     public Integer authenticateUser(String email, String password) {
-        String query = "SELECT user_id FROM Users WHERE email = ? AND password = ?";
-        String query2 = "SELECT admin_id FROM Admins WHERE email = ? AND password = ?";
+        String query = "SELECT user_id, password FROM Users WHERE email = ?";
+        String query2 = "SELECT admin_id, password FROM Admins WHERE email = ?";
 
-        // Check user (query) and admin (query2) tables for email and password
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, email);
-            statement.setString(2, password);
 
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    return resultSet.getInt("user_id");
+                    String hashedPassword = resultSet.getString("password");
+                    boolean passwordMatch = verifyPassword(password, hashedPassword);
+                    if (passwordMatch) {
+                        return resultSet.getInt("user_id");
+                    }
                 }
             }
         } catch (SQLException e) {
@@ -157,11 +165,14 @@ public class UserService {
 
         try (PreparedStatement statement = connection.prepareStatement(query2)) {
             statement.setString(1, email);
-            statement.setString(2, password);
 
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    return -(resultSet.getInt("admin_id"));
+                    String hashedPassword = resultSet.getString("password");
+                    boolean passwordMatch = verifyPassword(password, hashedPassword);
+                    if (passwordMatch) {
+                        return -(resultSet.getInt("admin_id"));
+                    }
                 }
             }
         } catch (SQLException e) {
@@ -170,6 +181,15 @@ public class UserService {
 
         return null; // User not found or incorrect password
     }    
+
+    public static String hashPassword(String plainPassword) {
+        String hashedPassword = BCrypt.hashpw(plainPassword, BCrypt.gensalt());
+        return hashedPassword;
+    }
+    
+    public static boolean verifyPassword(String plainPassword, String hashedPassword) {
+        return BCrypt.checkpw(plainPassword, hashedPassword);
+    }
 
     // Get user profile by user id
     public User getUser(int userId) throws SQLException {

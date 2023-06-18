@@ -17,9 +17,14 @@ const Leaderboard = () => {
   const fetchLeaderboardData = async () => {
     try {
       const response = await api.get('/api/leaderboard/top10');
-      const response2 = await api.get(`/api/leaderboard/${userId}/rank`);
       setLeaderboardData(response.data);
-      setUserRank(response2.data);
+
+      if (userId === null) {
+        setUserRank('N/A');
+      } else {
+        const response2 = await api.get(`/api/leaderboard/${userId}/rank`);
+        setUserRank(response2.data);
+      }
     } catch (error) {
       console.error('Error fetching leaderboard data:', error);
     }
