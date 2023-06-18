@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Timer;
@@ -167,52 +168,79 @@ public class StockListingService implements InitializingBean {
         return null;
     }
     
-    // Refresh the stock data in the stockQueue
     public void refreshStockData() throws SQLException {
-        setLastUpdateTime(LocalDateTime.now());
-
-        // Build the symbols string
-        StringBuilder symbolsBuilder = new StringBuilder();
-        for (String code : COMPANY_CODES) {
-            symbolsBuilder.append(code).append(".KL,");
-        }
-
-        // Delete last character
-        symbolsBuilder.deleteCharAt(symbolsBuilder.length() - 1);
-        String company_symbols = symbolsBuilder.toString();
-
-        // Get the updated stock data for all symbols
-        List<Stock> updatedStocks = stockService.getStockData(company_symbols);
-
-        // Update the stock data in the stockQueue and stock table
-        if (updatedStocks != null) {
-            // Clear the existing stockQueue
-            stockQueue.clear();
-
-            for (Stock updatedStock : updatedStocks) {
-                Stock existingStock = stockTableOperationService.getStock(updatedStock.getSymbol());
-                if (existingStock != null) {
-                    existingStock.setPrice(updatedStock.getPrice());
-                    existingStock.setPriceChange(updatedStock.getPriceChange());
-                    existingStock.setPriceChangePercent(updatedStock.getPriceChangePercent());
-                    stockTableOperationService.updateStockPrice(existingStock.getSymbol(), existingStock.getPrice());
-                    stockTableOperationService.updateStockPriceChange(existingStock.getSymbol(), existingStock.getPriceChange());
-                    stockTableOperationService.updateStockPriceChangePercent(existingStock.getSymbol(), existingStock.getPriceChangePercent());
-
-                    // Add the existing stock to the stockQueue
-                    stockQueue.add(existingStock);
-                } else {
-                    stockTableOperationService.addStock(updatedStock.getName(), updatedStock.getSymbol(), updatedStock.getPrice(), updatedStock.getPriceChange(), updatedStock.getPriceChangePercent());
-
-                    // Add the newly added stock to the stockQueue
-                    Stock newlyAddedStock = stockTableOperationService.getStock(updatedStock.getSymbol());
-                    if (newlyAddedStock != null) {
-                        stockQueue.add(newlyAddedStock);
+        LocalDateTime now = LocalDateTime.now();
+    
+        // Check if it is within regular market hours
+        if (isWithinTradingHours(now)) {
+            setLastUpdateTime(now);
+    
+            // Build the symbols string
+            StringBuilder symbolsBuilder = new StringBuilder();
+            for (String code : COMPANY_CODES) {
+                symbolsBuilder.append(code).append(".KL,");
+            }
+    
+            // Delete last character
+            symbolsBuilder.deleteCharAt(symbolsBuilder.length() - 1);
+            String company_symbols = symbolsBuilder.toString();
+    
+            // Get the updated stock data for all symbols
+            List<Stock> updatedStocks = stockService.getStockData(company_symbols);
+    
+            // Update the stock data in the stockQueue and stock table
+            if (updatedStocks != null) {
+                // Clear the existing stockQueue
+                stockQueue.clear();
+    
+                for (Stock updatedStock : updatedStocks) {
+                    Stock existingStock = stockTableOperationService.getStock(updatedStock.getSymbol());
+                    if (existingStock != null) {
+                        existingStock.setPrice(updatedStock.getPrice());
+                        existingStock.setPriceChange(updatedStock.getPriceChange());
+                        existingStock.setPriceChangePercent(updatedStock.getPriceChangePercent());
+                        stockTableOperationService.updateStockPrice(existingStock.getSymbol(), existingStock.getPrice());
+                        stockTableOperationService.updateStockPriceChange(existingStock.getSymbol(), existingStock.getPriceChange());
+                        stockTableOperationService.updateStockPriceChangePercent(existingStock.getSymbol(), existingStock.getPriceChangePercent());
+    
+                        // Add the existing stock to the stockQueue
+                        stockQueue.add(existingStock);
+                    } else {
+                        stockTableOperationService.addStock(updatedStock.getName(), updatedStock.getSymbol(), updatedStock.getPrice(), updatedStock.getPriceChange(), updatedStock.getPriceChangePercent());
+    
+                        // Add the newly added stock to the stockQueue
+                        Stock newlyAddedStock = stockTableOperationService.getStock(updatedStock.getSymbol());
+                        if (newlyAddedStock != null) {
+                            stockQueue.add(newlyAddedStock);
+                        }
                     }
                 }
             }
+        } else {
+            // Retrieve stock data from the stock table during non-trading hours
+            stockQueue.clear();
+            stockQueue.addAll(stockTableOperationService.getAllStocks());
         }
     }
+    
+    private boolean isWithinTradingHours(LocalDateTime dateTime) {
+        DayOfWeek dayOfWeek = dateTime.getDayOfWeek();
+        int hour = dateTime.getHour();
+        int minute = dateTime.getMinute();
+    
+        // Check if it is a weekday (Monday to Friday)
+        if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) {
+            return false;
+        }
+    
+        // Check if it is within regular market hours (9:00 AM - 12:30 PM and 2:30 PM - 5:00 PM MST)
+        if ((hour >= 9 && hour < 12) || (hour == 12 && minute <= 30) || (hour >= 14 && hour < 17)) {
+            return true;
+        }
+    
+        return false;
+    }
+    
 
     // Search for stocks by symbol or name
     public List<Stock> searchStocks(String query) {

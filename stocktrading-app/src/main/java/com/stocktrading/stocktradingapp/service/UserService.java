@@ -73,7 +73,10 @@ public class UserService {
     // updates a user's password
     public void updateUserPassword(int userId, String newPassword) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement("UPDATE Users SET password = ? WHERE user_id = ?")) {
-            statement.setString(1, newPassword);
+            // Hash the password
+            String hashedPassword = hashPassword(newPassword);
+            statement.setString(1, hashedPassword);
+            // statement.setString(1, newPassword);
             statement.setInt(2, userId);
 
             statement.executeUpdate();

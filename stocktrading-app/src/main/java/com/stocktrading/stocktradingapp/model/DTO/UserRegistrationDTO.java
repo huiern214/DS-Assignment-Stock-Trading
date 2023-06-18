@@ -21,7 +21,5 @@ public class UserRegistrationDTO {
     public String getPassword() {
         return password;
     }
-
-    // Additional fields or DTO-specific logic if needed
 }
 
