@@ -1,5 +1,7 @@
 package com.stocktrading.stocktradingapp.model;
 
+import java.util.Objects;
+
 public class Stock implements Comparable<Stock>{
     private String symbol;
     private String name; // company name
@@ -81,6 +83,23 @@ public class Stock implements Comparable<Stock>{
     public int compareTo(Stock other) {
         // Implement the comparison logic based on the company name
         return this.getName().compareTo(other.getName());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Stock stock = (Stock) o;
+        return Objects.equals(symbol, stock.symbol);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(symbol);
     }
 }
 
