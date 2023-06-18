@@ -262,4 +262,17 @@ public class UserService {
             }
         }
     }
+
+    // Deletes users with funds greater than or equal to the specified amount
+    public boolean deleteUsersWithHighFunds(double minFunds) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement("DELETE FROM Users WHERE funds >= ?")) {
+            statement.setDouble(1, minFunds);
+
+            int affectedRows = statement.executeUpdate();
+            return affectedRows > 0;
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return false;
+    }
 }
