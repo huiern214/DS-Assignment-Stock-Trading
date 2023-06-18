@@ -102,6 +102,31 @@ public class OrdersTableOperations {
         return sellOrders;
     }
 
+    public List<Order> getMatchingOrders() throws SQLException {
+        String query = "SELECT * FROM Orders WHERE order_type = 'BUY'  ORDER BY timestamp ASC";
+
+        List<Order> sellOrders = new ArrayList<>();
+
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    int orderId = resultSet.getInt("order_id");
+                    int userId = resultSet.getInt("user_id");
+                    String stockSymbol = resultSet.getString("stock_symbol");
+                    int quantity = resultSet.getInt("quantity");
+                    double price = resultSet.getDouble("price");
+                    String orderType = resultSet.getString("order_type");
+
+                    Order order = new Order(orderId, userId, stockSymbol, quantity, price, orderType);
+                    sellOrders.add(order);
+                }
+            }
+        }
+
+        return sellOrders;
+    }
+
     public int getOrderQuantity(int orderId) {
         String query = "SELECT quantity FROM Orders WHERE order_id = ?";
 
