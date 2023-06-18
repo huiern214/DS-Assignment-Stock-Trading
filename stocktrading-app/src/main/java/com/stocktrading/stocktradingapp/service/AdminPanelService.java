@@ -107,4 +107,9 @@ public class AdminPanelService {
     public void updateAllStocksQuantity(int quantity) {
         stockTableOperationService.updateAllStocksQuantity(quantity);
     }
+
+    // Deletes / Disqualify users with funds greater than or equal to the specified amount
+    public boolean deleteUsersWithHighFunds(double funds) throws SQLException {
+        return userService.deleteUsersWithHighFunds(funds);
+    }
 }
