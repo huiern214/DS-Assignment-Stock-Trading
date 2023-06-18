@@ -55,6 +55,31 @@ public class OrdersTableOperationService {
             }
     }
 
+    public List<Order> getMatchingSellOrders(String stockSymbol) throws SQLException {
+        String query = "SELECT * FROM Orders WHERE stock_symbol = ? AND order_type = 'SELL' ORDER BY timestamp ASC";
+
+        List<Order> sellOrders = new ArrayList<>();
+
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, stockSymbol);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    int orderId = resultSet.getInt("order_id");
+                    int userId = resultSet.getInt("user_id");
+                    int quantity = resultSet.getInt("quantity");
+                    double price = resultSet.getDouble("price");
+                    String orderType = resultSet.getString("order_type");
+
+                    Order order = new Order(orderId, userId, stockSymbol, quantity, price, orderType);
+                    sellOrders.add(order);
+                }
+            }
+        }
+
+        return sellOrders;
+    }
+
     public List<Order> getMatchingSellOrders(String stockSymbol, double price, int user_id) throws SQLException {
         String query = "SELECT * FROM Orders WHERE stock_symbol = ? AND order_type = 'SELL' AND price <= ? AND user_id != ? ORDER BY timestamp ASC";
 
@@ -78,6 +103,30 @@ public class OrdersTableOperationService {
             }
         }
 
+        return sellOrders;
+    }
+
+    public List<Order> getMatchingBuyOrders(String stockSymbol) throws SQLException {
+        String query = "SELECT * FROM Orders WHERE stock_symbol = ? AND order_type = 'BUY' ORDER BY timestamp ASC";
+
+        List<Order> sellOrders = new ArrayList<>();
+
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, stockSymbol);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    int orderId = resultSet.getInt("order_id");
+                    int userId = resultSet.getInt("user_id");
+                    int quantity = resultSet.getInt("quantity");
+                    double price = resultSet.getDouble("price");
+                    String orderType = resultSet.getString("order_type");
+
+                    Order order = new Order(orderId, userId, stockSymbol, quantity, price, orderType);
+                    sellOrders.add(order);
+                }
+            }
+        }
         return sellOrders;
     }
 
@@ -165,6 +214,4 @@ public class OrdersTableOperationService {
         }
         return null;
     }
-
-    // Other methods for retrieving orders, updating order details, etc.
 }
