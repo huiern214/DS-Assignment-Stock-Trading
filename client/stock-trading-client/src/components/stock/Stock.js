@@ -82,13 +82,23 @@ const Stock = () => {
   };
 
   const handleTradeStock = async (action) => {
+
+    // Check if it is within market hours
+    if (!isWithinMarketHours()) {
+      console.log('Trading is only allowed during market hours.');
+      toast.error('Trading is only allowed during market hours.');
+      return;
+    }
+
     if (!tradeAmount || !numberOfShares) {
       console.log('Please enter a value for both fields.');
+      toast.error('Please enter a value for both fields.');
       return;
     }
 
     if (userId === null) {
       console.log('Please login to trade.');
+      toast.error('Please login to trade.');
       return;
     }
   
@@ -124,6 +134,25 @@ const Stock = () => {
         toast.error('Failed to trade the stock.');
       }
     }
+  };
+
+  const isWithinMarketHours = () => {
+    const now = new Date();
+    const dayOfWeek = now.getDay();
+    const hour = now.getHours();
+    const minute = now.getMinutes();
+
+    // Check if it is a weekday (Monday to Friday)
+    if (dayOfWeek === 0 || dayOfWeek === 6) {
+      return false;
+    }
+
+    // Check if it is within market hours (9:00 AM - 12:30 PM and 2:30 PM - 5:00 PM)
+    if ((hour >= 9 && hour < 12) || (hour === 12 && minute <= 30) || (hour >= 14 && hour < 17)) {
+      return true;
+    }
+
+    return false;
   };
 
   const getChangeClass = (value) => {
