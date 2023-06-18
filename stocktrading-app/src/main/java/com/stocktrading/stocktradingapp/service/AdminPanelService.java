@@ -1,7 +1,6 @@
 package com.stocktrading.stocktradingapp.service;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -22,15 +21,15 @@ public class AdminPanelService {
     public final UserService userService;
     public final StockListingService stockListingService;
     public final StockTableOperationService stockTableOperationService;
-    
-    private final String databaseUrl = "jdbc:sqlite:stocktrading-app/database/data.sqlite3";
+    public final MatchOrdersService matchOrdersService;
     private Connection connection;
 
-    public AdminPanelService(UserService userService, StockListingService stockListingService, StockTableOperationService stockTableOperationService) throws SQLException {
+    public AdminPanelService(Connection connection, UserService userService, StockListingService stockListingService, StockTableOperationService stockTableOperationService, MatchOrdersService matchOrdersService) throws SQLException {
         this.userService = userService;
         this.stockListingService = stockListingService;
         this.stockTableOperationService = stockTableOperationService;
-        this.connection = DriverManager.getConnection(databaseUrl);
+        this.matchOrdersService = matchOrdersService;
+        this.connection = connection;
     }
 
     public boolean deleteUser(int userId) throws SQLException {
@@ -99,8 +98,9 @@ public class AdminPanelService {
         return stockListingService.getStockQueue();
     }
 
-    public void updateStockQuantity(String code, int quantity) {
+    public void updateStockQuantity(String code, int quantity) throws SQLException {
         stockTableOperationService.updateStockQuantity(code, quantity);
+        matchOrdersService.fulfillOrders();
     }
 
     // Update all stocks quantity to 500 lot in the database

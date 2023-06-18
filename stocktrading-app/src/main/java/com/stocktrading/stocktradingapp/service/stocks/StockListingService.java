@@ -19,6 +19,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 
 import com.stocktrading.stocktradingapp.model.Stock;
+import com.stocktrading.stocktradingapp.service.MatchOrdersService;
 import com.stocktrading.stocktradingapp.service.databaseOperations.StockTableOperationService;
 
 @Service
@@ -32,6 +33,7 @@ public class StockListingService implements InitializingBean {
 
     private final StockAPIService stockService;
     private final StockTableOperationService stockTableOperationService;
+    private final MatchOrdersService matchOrdersService;
 
     private PriorityQueue<Stock> stockQueue;
 
@@ -40,9 +42,10 @@ public class StockListingService implements InitializingBean {
     private static final long INTERVAL = 5 * 60 * 1000; // 5 minutes in milliseconds
 
     // Constructor
-    public StockListingService(StockAPIService stockService, StockTableOperationService stockTableOperationService) throws SQLException {
+    public StockListingService(StockAPIService stockService, StockTableOperationService stockTableOperationService, MatchOrdersService matchOrdersService) throws SQLException {
         this.stockService = stockService;
         this.stockTableOperationService = stockTableOperationService;
+        this.matchOrdersService = matchOrdersService;
         this.stockQueue = new PriorityQueue<>();
         this.lastUpdateTime = LocalDateTime.now(); // Set the initial value
 
@@ -117,6 +120,11 @@ public class StockListingService implements InitializingBean {
 
         // Update the stock queue with all stocks
         stockQueue.addAll(stockTableOperationService.getAllStocks());
+
+        if (isWithinTradingHours(lastUpdateTime)){
+            // Match orders
+            matchOrdersService.fulfillOrders();
+        }
     }
 
     @Override
@@ -216,6 +224,7 @@ public class StockListingService implements InitializingBean {
                     }
                 }
             }
+            matchOrdersService.fulfillOrders();
         } else {
             // Retrieve stock data from the stock table during non-trading hours
             stockQueue.clear();
