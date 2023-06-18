@@ -81,6 +81,18 @@ public class UserController {
         }
     }
     // Example output:
-    // {"userId":1,"username":"Ali","email":"Ali@gmail.com","password":"1234","funds":48689.0,"portfolio":{"holdings":{"AMMB Holdings Berhad (AMBANK)":5},"value":1775.0}}
-
+    // {
+    //     "userId": 1,
+    //     "username": "Ali",
+    //     "email": "Ali@gmail.com",
+    //     "password": "$2a$10$y/yqIxAr/TbJa.8Mb66AkuBZINa81feMM7tpa1FQOSLwcWfxlJ78S",
+    //     "funds": 37128.0,
+    //     "portfolio": {
+    //         "holdings": {
+    //             "[1015.KL] AMMB Holdings Berhad (AMBANK)": 10,
+    //             "[1961.KL] IOI Corporation Berhad (IOICORP)": 1
+    //         },
+    //         "value": 3816.0
+    //     }
+    // }
 }
