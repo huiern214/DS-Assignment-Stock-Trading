@@ -100,12 +100,13 @@ const Dashboard = () => {
         {/* Open Positions */}
         <div className="dashboard-section">
         <h2 className="dashboard-h2">Open Positions</h2>
+        <div className="note"> Note: Qty (1 lot = 100 shares)</div>
         {dashboardData.openPositions.length > 0 ? (
           <table>
             <thead>
               <tr>
                 <th>Symbol</th>
-                <th>Qty Sold</th>
+                <th>Qty</th>
                 <th>Entry Price</th>
                 <th>Market Price</th>
                 <th>Entry Time</th>

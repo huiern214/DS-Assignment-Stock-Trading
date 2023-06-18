@@ -70,7 +70,7 @@ public class NewsService implements InitializingBean {
         LocalDate today = LocalDate.now();
         LocalDate publishedAfterDate = today;
         if (today.isEqual(LocalDate.now())) {
-            publishedAfterDate = today.minusWeeks(2);
+            publishedAfterDate = today.minusWeeks(2); // 2 weeks before today
         }
         String publishedAfter = publishedAfterDate.toString() + "T00:00:00";
         // return fetchNewsData(publishedAfter);
