@@ -10,7 +10,6 @@ import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.PriorityQueue;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -68,19 +67,8 @@ public class StockAPIService {
                     stockList.add(stock);
                 }
     
-                // Since PriorityQueue does not allow sorting, we will sort the list first
                 // Sort the list based on the name in ascending order
                 stockList.sort(Comparator.comparing(Stock::getName));
-
-                // Create a PriorityQueue based on the sorted list
-                // PriorityQueue<Stock> stockQueue = new PriorityQueue<>(Comparator.comparing(Stock::getName));
-                // stockQueue.addAll(stockList);
-    
-                // for (Stock stock : stockQueue) {
-                //     System.out.print(stock.getPrice() + ", ");
-                // }
-                // return stockQueue;
-                System.out.println(stockList);
                 return stockList;
             }
         } catch (IOException e) {

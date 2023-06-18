@@ -51,7 +51,7 @@ public class BuySellService {
         List<Order> matchingOrders = ordersTableOperationService.getMatchingSellOrders(stockSymbol, desiredPrice, buyerId);
         int leftoverStockQuantity = desiredQuantity;
         int totalQuantityInMatchingOrders = 0;
-        int tempSystemStockQuantity = stockTableOperationService.getStockQuantity(stockSymbol);
+        // int tempSystemStockQuantity = stockTableOperationService.getStockQuantity(stockSymbol);
         //Check if the matchingOrders meets the desiredQuantity of stocks to be purchased
         for (Order matchingOrder : matchingOrders){
             totalQuantityInMatchingOrders = totalQuantityInMatchingOrders + matchingOrder.getQuantity();
@@ -321,7 +321,7 @@ public class BuySellService {
                         // as well as the desired Quantity to sell is higher than or equal to the buyer's Order
                         // Step 5.2: Execute a partial trade
                         int tradeQuantity = (firstPortfolioQuantity >= leftoverStockQuantity) ? buyerQuantity : firstPortfolioQuantity;
-                        int orderQuantity = (buyerQuantity - tradeQuantity);
+                        // int orderQuantity = (buyerQuantity - tradeQuantity);
 
                         executePartialSellTrade(stockSymbol, desiredPrice, tradeQuantity, buyerId, buyerPrice,
                                 buyerQuantity, orderId);
