@@ -52,7 +52,7 @@ function Profile() {
             </tr>
             <tr>
               <td><strong>Funds:</strong></td>
-              <td>{profileData.funds}</td>
+              <td>{profileData.funds ? profileData.funds.toFixed(2) : '0.00'}</td>
             </tr>
           </tbody>
         </table>

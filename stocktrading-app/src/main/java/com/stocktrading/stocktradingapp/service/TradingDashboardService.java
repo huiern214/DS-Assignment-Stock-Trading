@@ -48,8 +48,12 @@ public class TradingDashboardService {
                         // If the open position has more quantity than the sell transaction,
                         // split the open position and create a new open position with the remaining quantity
                         int remainingQty = openPosition.getqtySold() - transaction.getQuantity();
-                        openPosition.setqtySold(remainingQty);
-                        tradingDashboard.addPosition(openPosition.getSymbol(), transaction.getQuantity(), openPosition.getEntryPrice(), openPosition.getEntryTime(), openPosition.getExitPrice());
+                        openPosition.setqtySold(transaction.getQuantity());
+                        tradingDashboard.closePosition(openPosition.getSymbol(), transaction.getPrice(), transaction.getTimestamp());
+                        tradingDashboard.addPosition(openPosition.getSymbol(), remainingQty, openPosition.getEntryPrice(), openPosition.getEntryTime(), openPosition.getExitPrice());
+                        // openPosition.setqtySold(remainingQty);
+                        // tradingDashboard.addPosition(openPosition.getSymbol(), transaction.getQuantity(), openPosition.getEntryPrice(), openPosition.getEntryTime(), openPosition.getExitPrice());
+                        // tradingDashboard.closePosition(openPosition.getSymbol(), transaction.getPrice(), transaction.getTimestamp());
                         break;
                     } else if (openPosition.getqtySold() == transaction.getQuantity()) {
                         // If the open position has the same quantity as the sell transaction,

@@ -63,7 +63,7 @@ const Dashboard = () => {
         {/* Total PnL and Points */}
         <div className="dashboard-section">
           <div className="user-info"><strong>Username: </strong>{profileData.username}</div>
-          <div className="user-info"><strong>Funds: </strong>MYR {profileData.funds}</div>
+          <div className="user-info"><strong>Funds: </strong>MYR {profileData.funds ? profileData.funds.toFixed(2) : '0.00'}</div>
           <div className="dashboard-stats">
             <div>
               <h2>Total Realized P/L</h2>

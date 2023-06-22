@@ -11,14 +11,19 @@ To run the stock trading application locally, follow these steps:
 
 **Server**  
 1. Obtain your own API key from https://rapidapi.com/sparior/api/yahoo-finance15 (for real time stock data) 
-   and https://www.marketaux.com/news/country/my (for Latest news)
-2. Create an `.env` file in `stocktrading-app/src/main/resources`
+   and https://www.marketaux.com/news/country/my (for latest news)
+2. Obtain your own email and app password (for email notification)   
+   by following this guide https://youtu.be/ugIUObNHZdo [3:00-3:40] 
+3. Create an `.env` file in `stocktrading-app/src/main/resources`
   ```
     API_KEY="xxxxxxxxxxx"  
     API_BASE_URL="https://yahoo-finance15.p.rapidapi.com/api/yahoo/qu/quote/"
 
     NEWS_API_TOKEN="xxxxxxxxxxx"
     NEWS_API_BASE_URL="https://api.marketaux.com/v1/news/all"
+
+    EMAIL_USERNAME="xxxxxx@gmail.com"
+    EMAIL_PASSWORD="xxxxxxxxxxxxxxxx"
   ```
 1. Run `StockTradingApplication.java`  
 2. Access the application in your web browser at `http://localhost:8080`.

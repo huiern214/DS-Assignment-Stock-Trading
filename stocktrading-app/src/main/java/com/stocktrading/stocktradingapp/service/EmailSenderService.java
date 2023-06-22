@@ -1,10 +1,24 @@
 package com.stocktrading.stocktradingapp.service;
 
-import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-
+// import javax.mail.Authenticator;
+// import javax.mail.Message;
+// import javax.mail.MessagingException;
+// import javax.mail.PasswordAuthentication;
+// import javax.mail.Session;
+// import javax.mail.Transport;
+// import javax.mail.*;
+// import javax.mail.internet.InternetAddress;
+// import javax.mail.internet.MimeMessage;
+import jakarta.mail.Authenticator;
+import jakarta.mail.Message;
+import jakarta.mail.MessagingException;
+import jakarta.mail.PasswordAuthentication;
+import jakarta.mail.Session;
+import jakarta.mail.Transport;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.sql.SQLException;
 import java.util.Properties;
@@ -13,14 +27,17 @@ import java.util.Properties;
 public class EmailSenderService {
     private final UserService userService;
 
+    @Value("${email.username}")
+    private String EMAIL_USERNAME;
+
+    @Value("${email.password}")
+    private String EMAIL_PASSWORD;
+
     public EmailSenderService(UserService userService) {
         this.userService = userService;
     }
 
     public void sendSimpleEmail(int userId, String subject, String body) throws SQLException {
-
-        final String username = "datastructureocc5@gmail.com";
-        final String password = "cgstewmwwocrjoeb";
 
         Properties prop = new Properties();
         prop.put("mail.smtp.host", "smtp.gmail.com");
@@ -29,9 +46,9 @@ public class EmailSenderService {
         prop.put("mail.smtp.starttls.enable", "true"); //TLS
 
         Session session = Session.getInstance(prop,
-                new javax.mail.Authenticator() {
+                new Authenticator() {
                     protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication(username, password);
+                        return new PasswordAuthentication(EMAIL_USERNAME, EMAIL_PASSWORD);
                     }
                 });
 
@@ -40,7 +57,7 @@ public class EmailSenderService {
         if (userEmail != null) {
             try {
                 Message message = new MimeMessage(session);
-                message.setFrom(new InternetAddress("datastructureocc5@gmail.com"));
+                message.setFrom(new InternetAddress(EMAIL_USERNAME));
                 message.setRecipients(
                         Message.RecipientType.TO,
                         InternetAddress.parse(userEmail)

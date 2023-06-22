@@ -113,14 +113,21 @@ const Stock = () => {
         });
         console.log('Stock bought successfully.');
         toast.success('Stock bought successfully.');
-
-        // Send email notification
-        await api.post(`/api/email/${userId}`, {
-          subject: 'Stock Purchase Confirmation',
-          body: `You have successfully purchased ${numberOfShares} shares of ${key}.`,
-        });
-        window.location.reload();
-
+        // // Send email notification
+        // await api.post(`/api/email/${userId}`, {
+        //   subject: 'Stock Purchase Confirmation',
+        //   body: `You have successfully purchased ${numberOfShares} shares of ${key}.`,
+        // });
+        // window.location.reload();
+        try {
+          // Send email notification
+          await api.post(`/api/email/${userId}`, {
+            subject: 'Stock Purchase Confirmation',
+            body: `You have successfully purchased ${numberOfShares} shares of ${key}.`,
+          });
+        } catch (error) {
+          console.error('Error sending email notification:', error);
+        }
       } else if (action === 'sell') {
         await api.post('/api/buysell/sell', {
           stockSymbol: key,
@@ -131,12 +138,20 @@ const Stock = () => {
         console.log('Stock sold successfully.');
         toast.success('Stock sold successfully.');
 
-        // Send email notification
-        await api.post(`/api/email/${userId}`, {
-          subject: 'Stock Sale Confirmation',
-          body: `You have successfully sold ${numberOfShares} shares of ${key}.`,
-        });
-        
+        // // Send email notification
+        // await api.post(`/api/email/${userId}`, {
+        //   subject: 'Stock Sale Confirmation',
+        //   body: `You have successfully sold ${numberOfShares} shares of ${key}.`,
+        // });
+        try {
+          // Send email notification
+          await api.post(`/api/email/${userId}`, {
+            subject: 'Stock Sale Confirmation',
+            body: `You have successfully sold ${numberOfShares} shares of ${key}.`,
+          });
+        } catch (error) {
+          console.error('Error sending email notification:', error);
+        }
         window.location.reload();
       }
   
@@ -332,6 +347,16 @@ const Stock = () => {
                           </tr>
                         );
                       })}
+                      {askData.slice(bidData.length).map((ask, index) => (
+                        <tr key={index + bidData.length}>
+                          <td>-</td> {/* Display a dash for bidData columns */}
+                          <td>-</td> {/* Display a dash for bidData columns */}
+                          <td>-</td> {/* Display a dash for bidData columns */}
+                          <td>{ask.price}</td>
+                          <td>{ask.qty}</td>
+                          <td>{ask.noOfAcc}</td>
+                        </tr>
+                      ))}
                     </tbody>
                   </table>
                 </div>
